@@ -368,3 +368,85 @@ export const discoveryLeads = pgTable("discovery_leads", {
 | 8 | 🟡 Medium | `partner_invoices` table not in schema.ts | 1 hour |
 | 9 | 🟢 Low | Missing DB indexes on hot columns | 30 min |
 | 10 | 🟢 Low | George actions disabled in system prompt | Intentional? |
+
+---
+
+## Deep Audit Round 3 — 2026-03-03 22:28 EST
+
+### 1. Protection Fee Inconsistency — FIXED
+- **Problem:** `shared/protection-fee.ts` defined `PROTECTION_FEE_PERCENT = 7` (7%) but George's system prompt and comments said 5%. Code in `payments.routes.ts`, `service-requests.routes.ts`, and `job-management.routes.ts` all used `/ 1.07` while comments said "5% protection fee".
+- **Correct number per Alan:** 5% customer protection fee + 15% pro platform fee = 20% total take
+- **Fix:** Changed `PROTECTION_FEE_PERCENT` to 5 in `shared/protection-fee.ts`. Changed all `/ 1.07` to `/ 1.05` in 3 route files (4 occurrences total).
+- **Files:** `shared/protection-fee.ts`, `server/routes/commerce/payments.routes.ts`, `server/routes/jobs/service-requests.routes.ts`, `server/routes/jobs/job-management.routes.ts`
+
+### 2. Public Invoice IDs Sequential → Token — FIXED
+- **Problem:** Invoice payment URLs used sequential integer IDs (`/pay/invoice/1`, `/pay/invoice/2`), making them guessable/enumerable.
+- **Fix:** 
+  - Added `public_token` column (UUID) to `partner_invoices` table with unique index
+  - Auto-migration: adds column if missing, backfills NULLs, creates unique index
+  - Updated `Invoice` type and `mapInvoiceRow` to include `publicToken`
+  - All payment URLs now use token: `/pay/invoice/{uuid}` instead of `/pay/invoice/{id}`
+  - Added `getInvoiceByToken()` service function
+  - Added public endpoint `GET /api/invoices/pay/:token` (no auth required, returns limited fields)
+  - Updated Stripe Checkout success/cancel URLs to use token
+  - Updated payment reminder email URLs to use token
+- **Files:** `server/services/invoicing-system.ts`, `server/routes/partner-invoicing.routes.ts`
+
+### 3. No `/api/auth/me` Endpoint — FIXED
+- **Problem:** No way for the frontend to check current auth state.
+- **Fix:** Added `GET /api/auth/me` to unified auth routes. Returns `{ user: {...} }` (without password hash) for authenticated sessions, 401 otherwise. Also added `POST /api/auth/logout` endpoint.
+- **File:** `server/routes/auth/unified.routes.ts`
+
+### 4. Customer Email Verification — FIXED
+- **Problem:** No email verification on customer signup. Anyone could register with any email.
+- **Fix:**
+  - Added `email_verified` (boolean, default false) and `email_verification_token` (text) columns to `users` table in schema
+  - Customer registration now generates a UUID token and stores it on the user
+  - Added `GET /api/auth/verify-email?token={uuid}` endpoint that sets `email_verified = true`
+  - Existing users are unaffected (default false, no forced verification gate yet)
+  - **Note:** Actual email sending of verification link needs to be wired into the welcome email template (fire-and-forget call already exists but needs the link added)
+- **Files:** `shared/models/auth.ts`, `server/routes/auth/customer.routes.ts`
+
+### 5. George Consumer Mode "Q&A ONLY" — DOCUMENTED (Not a Bug)
+- **Finding:** George consumer mode is NOT restricted. The `userRole` parameter in `george-agent.ts` supports: `consumer`, `pro`, `business`, `admin`, `partner_discovery`.
+- Consumer role gets FULL tool access (booking, DIY, product search, video tutorials, etc.)
+- Only `partner_discovery` mode restricts tools to discovery-only subset
+- The "Q&A only" concern was likely a misunderstanding — consumer mode has always had full capabilities
+- **No code change needed.** This is working as designed.
+
+### 6. Frontend Build Verification
+- **TypeScript:** 105 errors total
+  - ~50 from missing `@types/react-helmet` — **FIXED** by installing the package
+  - Remaining errors are in: `florida-estimator.tsx` (ZillowProperty type missing fields), `business-onboarding.tsx` ("custom" plan type), `landing.tsx` (hasStar property), `hauler-dashboard.tsx` (serviceArea property), `services.tsx` (featured property), `admin-management.routes.ts` (type mismatch), `hauler.routes.ts` (b2bRates type)
+  - Fixed `batch1-fixes.routes.ts` (unused `reviews` import causing TS error)
+  - Fixed `hauler.routes.ts` type casts for b2bRates, sameDayAvailable, weeklyAvailability
+  - **Note:** These are pre-existing type looseness issues, not new regressions
+- **Vite Build:** ✅ Succeeds in 4.68s. All chunks generated correctly.
+- **Large chunks warning:** `index.js` (742KB), `recharts` (380KB), `customer-dashboard` (266KB) — could benefit from code splitting
+
+### 7. Dead Code (Documented, Not Deleted)
+- `server/routes/batch1-fixes.routes.ts` imported `reviews` from schema but never used it — removed
+- `shared/protection-fee.ts` `PROTECTION_FEE_TOOLTIP` export is defined but never imported anywhere in the codebase
+- Multiple blog pages import `react-helmet` which could be replaced with `use-seo.ts` hook already in the codebase
+- `server/services/founding-drip.ts`, `server/services/reengagement.ts` — email drip services that appear to be defined but never called from any route or cron
+
+### 8. Performance Concerns
+- **Missing pagination:** `GET /api/sales/leads` returns ALL leads with no limit/offset. Will degrade as leads grow.
+- **Missing pagination:** Most list endpoints in partner routes (invoices, etc.) have no pagination
+- **Missing indexes:** `discovery_leads` table has no index on `status` or `created_at` (frequently filtered/sorted columns)
+- **Large payloads:** Sales leads endpoint returns full `messages`, `proposal`, `collectedData`, `auditData` JSON blobs in list view — should only return these in detail view
+- **No N+1 issues found** — drizzle queries are properly batched
+
+### 9. Sales Leads Dashboard
+- **Empty state:** ✅ Shows "No leads found" when empty
+- **Loading state:** ✅ Shows loading spinner
+- **Error state:** ⚠️ Errors are silently swallowed (`catch { // ignore }`) — should show user-facing error
+- **API endpoints:** ✅ All 4 endpoints exist and match frontend expectations (GET list, GET detail, PATCH status, POST discovery-lead)
+- **Discovery-lead POST:** ✅ Correctly extracts fields from proposal object, saves to DB with proper defaults
+
+### 10. Recent Commits Integration
+- Last 15 commits reviewed. No conflicts between invoicing routes, sales leads routes, and discovery changes.
+- All route registrations are independent (different URL prefixes).
+- Build passes ✅
+- George agent changes (opening questions, greeting style) don't affect tool definitions or consumer mode.
+
