@@ -1448,20 +1448,13 @@ export async function getPortfolioHealthRollup(businessId: string): Promise<obje
     };
   } catch (e: any) {
     console.error("getPortfolioHealthRollup error:", e);
-    // Return mock data when tables don't exist yet
     return {
       businessId,
-      overallScore: 72,
-      totalProperties: 48,
-      tiers: { green: 31, yellow: 12, red: 5 },
-      top5NeedingAttention: [
-        { address: "1420 Oak Ridge Dr", city: "Orlando", score: 28, propertyType: "residential" },
-        { address: "903 Maple St", city: "Kissimmee", score: 33, propertyType: "residential" },
-        { address: "2100 Pine Ave", city: "Orlando", score: 35, propertyType: "residential" },
-        { address: "445 Cedar Ln", city: "Sanford", score: 38, propertyType: "residential" },
-        { address: "780 Elm Blvd", city: "Winter Park", score: 39, propertyType: "residential" },
-      ],
-      _note: "mock data - tables may not exist yet",
+      overallScore: 0,
+      totalProperties: 0,
+      tiers: { green: 0, yellow: 0, red: 0 },
+      top5NeedingAttention: [],
+      _note: "No portfolio data available yet. Add properties to your account to see health scores.",
     };
   }
 }
@@ -3596,20 +3589,16 @@ export async function getHomeValueEstimate(address: string): Promise<object> {
  };
  }
  }
- } catch { /* fall through to mock */ }
+ } catch { /* fall through to no-data response */ }
  }
 
- // Fallback mock for Orlando area
- const baseValue = 380000 + Math.floor(Math.random() * 120000);
+ // No real data available
  return {
  address,
- estimatedValue: baseValue,
- comparables: [
- { address: "Nearby home #1", listPrice: baseValue - 15000, beds: 3, baths: 2, sqft: 1800 },
- { address: "Nearby home #2", listPrice: baseValue + 22000, beds: 4, baths: 2, sqft: 2100 },
- ],
- neighborhoodAvg: baseValue,
- note: "Estimated range based on Orlando market averages. Connect Realty API for live data.",
+ estimatedValue: null,
+ comparables: [],
+ neighborhoodAvg: null,
+ note: "Home value data is not yet available for this address. This feature uses public property records — data will be available once the Realty API integration is connected.",
  homeTip: "Homes with documented maintenance history sell for 3–5% more. Your UpTend service records count!",
  };
 }
