@@ -7,7 +7,7 @@
  */
 
 import { pool } from '../db';
-import { chat as georgeChat, type GeorgeContext } from './george-agent';
+import { georgeVoiceChat } from './george-voice';
 import { generateVoiceAudio, generateTwiMLWithAudio, generateTwiMLHangup, generateTwiMLGather } from './twilio-elevenlabs';
 import { nanoid } from 'nanoid';
 
@@ -141,34 +141,30 @@ export async function processVoiceInput(
     const turnNumber = conversationHistory.length + 1;
     await logConversationTurn(callSid, turnNumber, 'caller', speechResult);
 
-    // Build George context for partner voice
-    const georgeContext: GeorgeContext = {
-      userName: undefined, // We don't have caller's name yet
-      currentPage: `/partner-voice/${partnerSlug}`,
-      userRole: 'consumer', // Caller is a potential customer
-      isAuthenticated: false,
-      pendingPhotoBase64: undefined,
-      conversationState: buildVoiceConversationState(partnerSlug, partner, callerNumber, conversationHistory)
-    };
+    // Build lightweight voice context
+    const partnerContext = buildVoiceConversationState(partnerSlug, partner, callerNumber, conversationHistory);
 
-    // Format conversation history for George
+    // Format conversation history
     const georgeHistory = conversationHistory.map(turn => ({
       role: turn.role === 'caller' ? 'user' as const : 'assistant' as const,
       content: turn.content
     }));
 
-    // Get George's response
-    console.log(`[Partner Voice] Calling George for partner: ${partnerSlug}`);
-    const georgeResult = await georgeChat(speechResult, georgeHistory, georgeContext);
+    // Use lightweight voice-specific George (gpt-4o-mini, ~500 token prompt)
+    // instead of full George agent (gpt-4o, 78K token prompt)
+    console.log(`[Partner Voice] Calling George Voice (lightweight) for partner: ${partnerSlug}`);
+    const startTime = Date.now();
+    const georgeResult = await georgeVoiceChat(speechResult, georgeHistory, partnerContext);
+    console.log(`[Partner Voice] George responded in ${Date.now() - startTime}ms via ${georgeResult.provider}`);
     
-    // Clean response for voice (George sometimes returns long responses)
+    // Clean response for voice
     const cleanResponse = cleanResponseForVoice(georgeResult.response);
     
     // Log George's response
     await logConversationTurn(callSid, turnNumber + 1, 'george', cleanResponse);
 
     // Check if George wants to end the call
-    if (shouldEndCall(cleanResponse, georgeResult.buttons)) {
+    if (shouldEndCall(cleanResponse, [])) {
       await updateCallStatus(callSid, 'completed');
       
       const audioResult = await generateVoiceAudio(cleanResponse);
@@ -488,16 +484,30 @@ async function createPartnerLead(
   callSid: string
 ): Promise<void> {
   try {
-    // This would integrate with your lead management system
-    // For now, just log it
-    console.log(`[Partner Voice] Creating lead for ${partnerSlug}:`, {
-      phoneNumber,
-      description: description.substring(0, 200),
-      source: 'voice_call',
-      callSid
-    });
+    // Extract name from conversation if George captured it
+    const callHistory = await getConversationHistory(callSid);
+    const allText = callHistory.map(t => t.content).join(' ');
     
-    // TODO: Implement actual lead creation in partner_leads table
+    // Insert into partner_leads table
+    await pool.query(
+      `INSERT INTO partner_leads (partner_slug, customer_name, customer_phone, service_type, notes, source, status, created_at)
+       VALUES ($1, $2, $3, $4, $5, 'voice_call', 'new', NOW())`,
+      [
+        partnerSlug,
+        'Phone Lead', // Name extracted from conversation if available
+        phoneNumber,
+        'hvac',
+        description.substring(0, 500)
+      ]
+    );
+    
+    console.log(`[Partner Voice] Lead created in partner_leads for ${partnerSlug}: ${phoneNumber}`);
+    
+    // Mark call as having created a lead
+    await pool.query(
+      `UPDATE voice_call_logs SET lead_created = true WHERE call_sid = $1`,
+      [callSid]
+    );
   } catch (error: any) {
     console.error('[Partner Voice] Error creating partner lead:', error);
   }

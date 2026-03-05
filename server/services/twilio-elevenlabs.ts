@@ -75,7 +75,8 @@ export async function generateVoiceAudio(
   try {
     // output_format as query parameter — mp3 is most compatible with Twilio <Play>
     const voiceId = options.voice || JOSH_VOICE_ID;
-    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`, {
+    // mp3_22050_32 = smaller file, faster transfer, phone quality is fine for Twilio
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_22050_32&optimize_streaming_latency=4`, {
       method: 'POST',
       headers: {
         'Accept': 'audio/mpeg',
