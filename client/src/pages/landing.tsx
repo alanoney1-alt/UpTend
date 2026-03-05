@@ -15,6 +15,7 @@ import { Founding100 } from "@/components/landing/founding-100";
 import { AnnouncementTicker } from "@/components/landing/announcement-ticker";
 import { GeorgeInlinePrompt } from "@/components/ai/george-inline-prompt";
 import { useTranslation } from "react-i18next";
+import { useOrganizationSchema, useFAQSchema, HOME_SERVICES_FAQS } from "@/components/structured-data";
 
 export default function Landing() {
   useSEO({
@@ -22,6 +23,8 @@ export default function Landing() {
     description: "Orlando's trusted home services platform. Book vetted pros for cleaning, lawn care, junk removal, pressure washing & more. Instant quotes, real-time tracking.",
     path: "/",
   });
+  useOrganizationSchema();
+  useFAQSchema(HOME_SERVICES_FAQS);
   return (
     <div className="min-h-screen bg-background" data-testid="page-landing">
       <script

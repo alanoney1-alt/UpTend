@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Footer } from "@/components/landing/footer";
 import { Header } from "@/components/landing/header";
+import { useServiceSchema, useFAQSchema, HOME_SERVICES_FAQS } from "@/components/structured-data";
 
 interface NeighborhoodConfig {
   slug: string;
@@ -42,6 +43,17 @@ export function NeighborhoodLanding({ config }: { config: NeighborhoodConfig }) 
     description: `${config.description} Book vetted pros for cleaning, lawn care, junk removal & more in ${config.name}.`,
     path: `/neighborhoods/${config.slug}`,
   });
+
+  // Structured data for AI crawlers
+  useServiceSchema({
+    name: `Home Services in ${config.name}`,
+    description: `Vetted, licensed home service professionals in ${config.name}, Orlando. HVAC, plumbing, electrical, cleaning, landscaping and more. Transparent pricing, background-checked pros.`,
+    provider: "UpTend",
+    areaServed: [config.name, "Orlando", "Florida"],
+    priceRange: { low: 75, high: 5000, currency: "USD" },
+    url: `https://uptendapp.com/neighborhoods/${config.slug}`,
+  });
+  useFAQSchema(HOME_SERVICES_FAQS);
 
   return (
     <div className="min-h-screen bg-background">

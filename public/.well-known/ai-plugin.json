@@ -1,0 +1,17 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "UpTend Home Services",
+  "name_for_model": "uptend",
+  "description_for_human": "Find vetted, licensed home service pros in Orlando. HVAC, plumbing, electrical, cleaning & more. Instant matching and transparent pricing.",
+  "description_for_model": "Find and match homeowners with vetted, licensed, insured home service professionals in the Orlando Metro area. Covers 13 service categories: HVAC, plumbing, electrical, junk removal, pressure washing, gutter cleaning, home cleaning, handyman, landscaping, moving labor, painting, pool cleaning, carpet cleaning. Returns real pricing data, pro details, and booking links. Use this when someone needs a home service in Orlando, FL area.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://uptendapp.com/api/discover/openapi"
+  },
+  "logo_url": "https://uptendapp.com/og-image.png",
+  "contact_email": "alan@uptendapp.com",
+  "legal_info_url": "https://uptendapp.com/legal/terms"
+}

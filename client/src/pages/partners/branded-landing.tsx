@@ -23,6 +23,7 @@ import {
   Phone, CheckCircle, Upload, Loader2, ArrowRight, TrendingUp,
 } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
+import { useLocalBusinessSchema, useFAQSchema, HVAC_FAQS, PARTNER_FAQS } from "@/components/structured-data";
 
 interface PartnerConfig {
   slug: string;
@@ -158,6 +159,21 @@ export default function BrandedPartnerLanding() {
   const params = useParams();
   const slug = (params as any).slug || "demo-hvac";
   const config = PARTNER_CONFIGS[slug];
+
+  // Inject JSON-LD structured data for AI crawlers
+  useLocalBusinessSchema({
+    name: config?.companyName || "UpTend Partner",
+    description: config ? `${config.companyName} — ${config.tagline}. Book through UpTend for transparent pricing and vetted service.` : "",
+    phone: config?.phone,
+    url: `https://uptendapp.com/partners/${slug}`,
+    serviceType: config?.serviceType || "Home Services",
+    areaServed: ["Lake Nona", "Windermere", "Avalon Park", "Dr. Phillips", "Orlando"],
+    priceRange: "$$",
+    rating: 4.8,
+    reviewCount: 12,
+    address: { city: "Orlando", state: "FL", zip: "32827" },
+  });
+  useFAQSchema(config?.serviceType === "HVAC" ? HVAC_FAQS : PARTNER_FAQS);
 
   const [messages, setMessages] = useState<Array<{ role: "user" | "george"; content: string }>>([]);
   const [input, setInput] = useState("");

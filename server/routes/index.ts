@@ -331,6 +331,7 @@ import { registerWebSocketHandlers } from "./websocket/handlers";
 
 // Health check
 import { registerHealthRoutes } from "./api-health.routes";
+import { registerAIDiscoveryRoutes } from "./ai-discovery.routes";
 
 /**
  * Main routes registration function
@@ -676,6 +677,9 @@ export async function registerRoutes(
   registerFinancingRoutes(app);
   registerCampaignsRoutes(app);
   registerPartnerInventoryRoutes(app);
+
+  // Register AI Discovery API (public — ChatGPT, Perplexity, Alexa, Bing)
+  registerAIDiscoveryRoutes(app);
 
   // Register Health check routes
   registerHealthRoutes(app);
