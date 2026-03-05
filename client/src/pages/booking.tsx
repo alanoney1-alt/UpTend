@@ -171,6 +171,14 @@ export default function BookingPage() {
           </div>
         </div>
 
+        {/* HVAC Live Banner */}
+        <div className="max-w-2xl mx-auto mb-6 px-4 py-3 rounded-lg bg-orange-500/10 border border-orange-500/30 text-center">
+          <p className="text-sm font-medium text-foreground dark:text-white">
+            Currently serving <strong>HVAC</strong> in Orlando Metro. Other services launching soon.{" "}
+            <a href="/services/hvac" className="text-[#F47C20] underline underline-offset-2 font-semibold">Book HVAC →</a>
+          </p>
+        </div>
+
         {/* Florida Estimator */}
         <FloridaEstimator
           preselectedService={preselectedService ?? undefined}
