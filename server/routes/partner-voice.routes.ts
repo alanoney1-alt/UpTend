@@ -520,23 +520,30 @@ router.get("/voice/audio/:filename", async (req, res) => {
     const { filename } = req.params;
     
     // Security check - only allow specific file patterns
-    if (!/^[a-zA-Z0-9_-]+\.(wav|mp3)$/.test(filename)) {
+    if (!/^[a-zA-Z0-9_-]+\.(wav|mp3|ulaw)$/.test(filename)) {
       return res.status(400).json({ error: "Invalid filename" });
     }
 
-    const filePath = require('path').join(process.cwd(), 'public', 'audio', 'voice', filename);
-    
-    // Check if file exists
-    if (!require('fs').existsSync(filePath)) {
-      return res.status(404).json({ error: "Audio file not found" });
+    // Try in-memory buffer first (works on Railway's ephemeral filesystem)
+    const { getAudioBuffer } = await import("../services/twilio-elevenlabs");
+    const memBuffer = getAudioBuffer(filename);
+    if (memBuffer) {
+      const contentType = filename.endsWith('.mp3') ? 'audio/mpeg' : filename.endsWith('.wav') ? 'audio/wav' : 'audio/basic';
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Cache-Control', 'public, max-age=3600');
+      return res.send(memBuffer);
     }
 
-    // Set appropriate headers for audio
-    res.setHeader('Content-Type', 'audio/wav');
-    res.setHeader('Cache-Control', 'public, max-age=3600'); // Cache for 1 hour
-    
-    // Send the file
-    res.sendFile(filePath);
+    // Fallback to filesystem (local dev)
+    const filePath = require('path').join(process.cwd(), 'public', 'audio', 'voice', filename);
+    if (require('fs').existsSync(filePath)) {
+      const contentType = filename.endsWith('.mp3') ? 'audio/mpeg' : 'audio/wav';
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Cache-Control', 'public, max-age=3600');
+      return res.sendFile(filePath);
+    }
+
+    res.status(404).json({ error: "Audio file not found" });
   } catch (error: any) {
     console.error('[Partner Voice] Error serving audio file:', error);
     res.status(500).json({ error: "Failed to serve audio file" });

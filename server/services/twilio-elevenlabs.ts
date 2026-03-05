@@ -14,13 +14,21 @@ import { nanoid } from 'nanoid';
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const JOSH_VOICE_ID = 'TxGEqnHWrfWFTfGW9XjX';
 
-// Audio cache for common phrases
+// In-memory audio buffer store (Railway has ephemeral filesystem)
+const audioBufferStore = new Map<string, Buffer>();
 const audioCache = new Map<string, string>();
 
-// Ensure audio directory exists
+// Also keep filesystem as fallback for local dev
 const AUDIO_DIR = path.join(process.cwd(), 'public', 'audio', 'voice');
 if (!fs.existsSync(AUDIO_DIR)) {
   fs.mkdirSync(AUDIO_DIR, { recursive: true });
+}
+
+/**
+ * Get audio buffer by filename — used by the audio serving route
+ */
+export function getAudioBuffer(filename: string): Buffer | null {
+  return audioBufferStore.get(filename) || null;
 }
 
 export interface TTSOptions {
@@ -53,10 +61,15 @@ export async function generateVoiceAudio(
   const cacheKey = `${cleanText}-${options.voice || JOSH_VOICE_ID}-${options.speed || 1.15}`;
   if (audioCache.has(cacheKey)) {
     const filename = audioCache.get(cacheKey)!;
-    return {
-      audioUrl: `${process.env.BASE_URL || 'http://localhost:5000'}/audio/voice/${filename}`,
-      filename
-    };
+    // Only use cache if buffer still exists in memory
+    if (audioBufferStore.has(filename)) {
+      return {
+        audioUrl: `${process.env.BASE_URL || 'http://localhost:5000'}/api/voice/audio/${filename}`,
+        filename
+      };
+    }
+    // Buffer evicted, regenerate
+    audioCache.delete(cacheKey);
   }
 
   try {
@@ -88,16 +101,23 @@ export async function generateVoiceAudio(
       return null;
     }
 
-    // Save audio file
-    const filename = `${nanoid(12)}.mp3`; // mp3 — Twilio <Play> compatible
+    // Save audio to in-memory store AND filesystem
+    const filename = `${nanoid(12)}.mp3`;
     const filePath = path.join(AUDIO_DIR, filename);
     const audioBuffer = await response.arrayBuffer();
-    fs.writeFileSync(filePath, Buffer.from(audioBuffer));
+    const buffer = Buffer.from(audioBuffer);
+    
+    // In-memory store (works on Railway's ephemeral filesystem)
+    audioBufferStore.set(filename, buffer);
+    
+    // Also write to disk (works for local dev, may not persist on Railway)
+    try { fs.writeFileSync(filePath, buffer); } catch (e) { /* ok */ }
 
     // Cache the result
     audioCache.set(cacheKey, filename);
 
-    const audioUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/audio/voice/${filename}`;
+    // Use API route instead of static file serving (guaranteed to work)
+    const audioUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/api/voice/audio/${filename}`;
     
     console.log(`[ElevenLabs] Generated audio: ${filename} (${audioBuffer.byteLength} bytes)`);
     
