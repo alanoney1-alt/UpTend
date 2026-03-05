@@ -11,8 +11,10 @@
 import { db } from "../db";
 import { sql } from "drizzle-orm";
 
-const FOUNDING_DISCOUNT_PERCENT = 10; // 10%
-const FOUNDING_DISCOUNT_MAX_JOBS = 10;
+// Founding discount disabled — can't discount partner services (we'd owe the difference)
+// Re-enable when UpTend-employed services go live
+const FOUNDING_DISCOUNT_PERCENT = 0; // was 10%
+const FOUNDING_DISCOUNT_MAX_JOBS = 0; // was 10
 
 export interface FoundingDiscount {
   isFoundingMember: boolean;

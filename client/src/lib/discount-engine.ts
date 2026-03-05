@@ -109,11 +109,12 @@ export function calculateDiscounts(context: DiscountContext): DiscountBreakdown 
   }
 
   // Option C: First-Time Customer Discount (only if no other percentage discount)
-  else if (context.isFirstTimeCustomer && percentageDiscount === 0) {
-    percentageDiscount = 0.10;
-    percentageDiscountName = 'First-Time Customer';
-    percentageDiscountDescription = '10% off your first booking';
-  }
+  // First-time customer discount disabled — can't discount partner services
+  // else if (context.isFirstTimeCustomer && percentageDiscount === 0) {
+  //   percentageDiscount = 0.10;
+  //   percentageDiscountName = 'First-Time Customer';
+  //   percentageDiscountDescription = '10% off your first booking';
+  // }
 
   // Apply the chosen percentage discount
   if (percentageDiscount > 0) {
