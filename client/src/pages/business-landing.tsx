@@ -15,7 +15,21 @@ import {
 } from "lucide-react";
 
 export default function BusinessLanding() {
-  usePageTitle("UpTend for Business | One Platform. Problems Solved.");
+  usePageTitle("UpTend | Business Intelligence — One Platform. Problems Solved.");
+
+  // Update OG meta tags for business page
+  if (typeof document !== 'undefined') {
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+    const twitterDesc = document.querySelector('meta[name="twitter:description"]');
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (ogTitle) ogTitle.setAttribute('content', 'UpTend | Business Intelligence');
+    if (ogDesc) ogDesc.setAttribute('content', 'One platform. Problems solved. Whether you need more customers, fewer headaches, or both — we build the system around your business and have you live in 10 days.');
+    if (twitterTitle) twitterTitle.setAttribute('content', 'UpTend | Business Intelligence');
+    if (twitterDesc) twitterDesc.setAttribute('content', 'One platform. Problems solved. We build the system around your business and have you live in 10 days.');
+    if (metaDesc) metaDesc.setAttribute('content', 'UpTend Business Intelligence. One platform. Problems solved. HVAC, HOA, and property management solutions.');
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
