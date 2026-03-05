@@ -122,6 +122,8 @@ const JobScheduler = lazy(() => import("@/pages/partners/job-scheduler"));
 const PartnerAnalytics = lazy(() => import("@/pages/partners/partner-analytics"));
 const PartnerReviews = lazy(() => import("@/pages/partners/partner-reviews"));
 const PartnerSEOPage = lazy(() => import("@/pages/partners/partner-seo-page"));
+const PartnerNeighborhoodSEO = lazy(() => import("@/pages/partners/partner-neighborhood-seo"));
+const PartnerPhotoQuote = lazy(() => import("@/pages/partners/partner-photo-quote"));
 const InvoicePayPage = lazy(() => import("@/pages/pay/invoice").then(m => ({ default: m.InvoicePayPage })));
 const InvoicePaySuccessPage = lazy(() => import("@/pages/pay/invoice").then(m => ({ default: m.InvoicePaySuccessPage })));
 const CustomerJobTrack = lazy(() => import("@/pages/customer-job-track"));
@@ -503,7 +505,8 @@ function Router() {
       <Route path="/partners/:slug/qr-stickers" component={PartnerQrStickers} />
       <Route path="/partners/:slug/winback" component={PartnerWinback} />
       <Route path="/partners/:slug/phone" component={PartnerPhone} />
-      <Route path="/partners/:slug/:neighborhood" component={PartnerSEOPage} />
+      <Route path="/partners/:slug/quote" component={PartnerPhotoQuote} />
+      <Route path="/partners/:slug/:neighborhood" component={PartnerNeighborhoodSEO} />
       <Route path="/partners/:slug" component={BrandedPartnerLanding} />
       <Route path="/my-home-profile" component={HomeProfilePage} />
       <Route path="/my-membership" component={MyMembership} />

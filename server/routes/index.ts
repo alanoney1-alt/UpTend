@@ -135,6 +135,7 @@ import { registerPartnerDashboardRoutes } from "./partner-dashboard.routes";
 import { registerPartnerInvoicingRoutes } from "./partner-invoicing.routes";
 import { registerPartnerFeaturesRoutes } from "./partner-features.routes";
 import { registerPartnerOperationsRoutes } from "./partner-operations.routes";
+import { registerPartnerPhotoQuoteRoutes } from "./partner-photo-quote.routes";
 
 // Dispatch & Live Tracking routes
 import { registerDispatchRoutes } from "./dispatch.routes";
@@ -478,6 +479,7 @@ export async function registerRoutes(
   registerPartnerInvoicingRoutes(app);
   registerPartnerFeaturesRoutes(app);
   registerPartnerOperationsRoutes(app);
+  registerPartnerPhotoQuoteRoutes(app);
 
   // Register Dispatch & Live Tracking routes
   registerDispatchRoutes(app);
