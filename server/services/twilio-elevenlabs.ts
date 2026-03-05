@@ -86,11 +86,11 @@ export async function generateVoiceAudio(
         text: cleanText,
         model_id: options.model || 'eleven_turbo_v2_5',
         voice_settings: {
-          stability: options.stability || 0.4,
-          similarity_boost: 0.75,
-          style: 0.0,
+          stability: options.stability || 0.5,
+          similarity_boost: 0.8,
+          style: 0.15,
           use_speaker_boost: true,
-          speaking_rate: options.speed || 1.15
+          speaking_rate: options.speed || 1.0
         }
       })
     });
