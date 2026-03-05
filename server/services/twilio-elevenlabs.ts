@@ -191,12 +191,16 @@ function cleanTextForVoice(text: string): string {
  * Generate TwiML response with audio
  */
 export function generateTwiMLWithAudio(audioUrl: string, nextAction?: string): string {
-  const nextActionXml = nextAction ? `<Redirect>${nextAction}</Redirect>` : '<Gather input="speech" timeout="5" speechTimeout="2"><Say>Please continue.</Say></Gather>';
+  const actionUrl = nextAction || '';
   
+  // Play audio INSIDE Gather so Twilio listens while/after audio plays
+  // Without this, Redirect fires immediately after Play → no speech captured → "didn't catch that" loop
   return `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Play>${audioUrl}</Play>
-  ${nextActionXml}
+  <Gather input="speech" action="${actionUrl}" timeout="8" speechTimeout="3" language="en-US">
+    <Play>${audioUrl}</Play>
+  </Gather>
+  ${actionUrl ? `<Redirect>${actionUrl}</Redirect>` : '<Say voice="alice">Are you still there? Just let me know how I can help.</Say><Hangup/>'}
 </Response>`;
 }
 
@@ -206,8 +210,8 @@ export function generateTwiMLWithAudio(audioUrl: string, nextAction?: string): s
 export function generateTwiMLGather(
   prompt: string,
   actionUrl: string,
-  timeout = 5,
-  speechTimeout = 2
+  timeout = 8,
+  speechTimeout = 3
 ): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <Response>

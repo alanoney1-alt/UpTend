@@ -112,9 +112,9 @@ export async function processVoiceInput(
 
     const { partner_slug: partnerSlug, caller_number: callerNumber, called_number: calledNumber } = callResult.rows[0];
 
-    // Handle no speech or low confidence
-    if (!speechResult || (confidence !== undefined && confidence < 0.7)) {
-      const clarificationPrompt = "I'm sorry, I didn't catch that. Could you please repeat what you said?";
+    // Handle no speech or very low confidence (0.3 threshold — Twilio often returns 0.4-0.6)
+    if (!speechResult || (confidence !== undefined && confidence < 0.3)) {
+      const clarificationPrompt = "I'm still here. Go ahead and tell me what's going on.";
       
       const audioResult = await generateVoiceAudio(clarificationPrompt);
       if (audioResult) {
