@@ -207,7 +207,7 @@ export function generateTwiMLWithAudio(audioUrl: string, nextAction?: string): s
   // Without this, Redirect fires immediately after Play → no speech captured → "didn't catch that" loop
   return `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Gather input="speech" action="${actionUrl}" timeout="8" speechTimeout="3" language="en-US">
+  <Gather input="speech dtmf" action="${actionUrl}" timeout="8" speechTimeout="3" language="en-US" finishOnKey="#">
     <Play>${audioUrl}</Play>
   </Gather>
   ${actionUrl ? `<Redirect>${actionUrl}</Redirect>` : '<Say voice="alice">Are you still there? Just let me know how I can help.</Say><Hangup/>'}
@@ -225,7 +225,7 @@ export function generateTwiMLGather(
 ): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Gather input="speech" action="${actionUrl}" timeout="${timeout}" speechTimeout="${speechTimeout}" language="en-US">
+  <Gather input="speech dtmf" action="${actionUrl}" timeout="${timeout}" speechTimeout="${speechTimeout}" language="en-US" finishOnKey="#">
     <Say voice="alice">${cleanTextForVoice(prompt)}</Say>
   </Gather>
   <Redirect>${actionUrl}</Redirect>

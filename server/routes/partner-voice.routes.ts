@@ -92,8 +92,13 @@ router.post("/voice/partner/process", twilioWebhookLimiter, async (req, res) => 
     const {
       CallSid: callSid,
       SpeechResult: speechResult,
-      Confidence: confidenceStr
+      Confidence: confidenceStr,
+      Digits: digits
     } = req.body;
+
+    // If caller pressed keypad digits, treat them as speech input
+    // e.g., they typed their phone number or address number
+    const finalSpeechResult = speechResult || (digits ? `Pressed digits: ${digits}` : undefined);
 
     if (!callSid) {
       return res.status(400).type('text/xml').send(
@@ -103,10 +108,10 @@ router.post("/voice/partner/process", twilioWebhookLimiter, async (req, res) => 
 
     const confidence = confidenceStr ? parseFloat(confidenceStr) : undefined;
 
-    console.log(`[Partner Voice] Processing speech for call ${callSid}: "${speechResult}" (confidence: ${confidence})`);
+    console.log(`[Partner Voice] Processing input for call ${callSid}: speech="${speechResult}" digits="${digits}" (confidence: ${confidence})`);
 
     // Generate TwiML response with George's reply
-    const twiml = await processVoiceInput(callSid, speechResult, confidence);
+    const twiml = await processVoiceInput(callSid, finalSpeechResult, confidence);
     
     res.type('text/xml').send(twiml);
   } catch (error: any) {
