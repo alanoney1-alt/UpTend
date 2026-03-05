@@ -175,7 +175,7 @@ export default function BusinessLanding() {
                         "Photo quotes: customer sends a pic, you quote over the phone. No truck roll.",
                         "SEO pages ranking for your service in your specific neighborhoods",
                         "Social media content created, reviewed by a real CMO, and posted daily",
-                        "ROI dashboard: every impression, lead, and dollar tracked to the source",
+                        "Partner dashboard: every lead, every impression, every dollar tracked",
                       ].map(item => (
                         <li key={item} className="flex items-start gap-2 text-sm text-slate-300">
                           <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
@@ -289,13 +289,12 @@ export default function BusinessLanding() {
                     </h3>
                     <ul className="space-y-3">
                       {[
-                        { vendor: "CRM + Dispatch (ServiceTitan)", cost: "$2,450-$3,980" },
                         { vendor: "Website + SEO Agency", cost: "$1,000-$5,000" },
                         { vendor: "Answering Service", cost: "$200-$500" },
                         { vendor: "Review Software", cost: "$299-$399" },
                         { vendor: "Call Tracking", cost: "$45-$145" },
-                        { vendor: "GPS / Fleet Tracking", cost: "$250-$450" },
-                        { vendor: "Social Media", cost: "$500-$2,000" },
+                        { vendor: "Social Media Management", cost: "$500-$2,000" },
+                        { vendor: "CRM / Lead Tracking", cost: "$100-$400" },
                       ].map(item => (
                         <li key={item.vendor} className="flex justify-between text-sm">
                           <span className="text-slate-400">{item.vendor}</span>
@@ -303,8 +302,8 @@ export default function BusinessLanding() {
                         </li>
                       ))}
                       <li className="flex justify-between text-sm pt-3 border-t border-slate-700">
-                        <span className="text-white font-bold">6-7 vendors. 6-7 logins. 6-7 bills.</span>
-                        <span className="text-red-400 font-bold font-mono">$4,744-$12,474</span>
+                        <span className="text-white font-bold">5-6 vendors. 5-6 logins. 5-6 bills.</span>
+                        <span className="text-red-400 font-bold font-mono">$2,144-$8,444</span>
                       </li>
                     </ul>
                   </div>
@@ -319,7 +318,6 @@ export default function BusinessLanding() {
                         { feature: "Social Media + CMO Oversight", cost: "Included" },
                         { feature: "Review Generation", cost: "Included" },
                         { feature: "Partner Dashboard + CRM", cost: "Included" },
-                        { feature: "Job Scheduling + Dispatch", cost: "Included" },
                         { feature: "Photo Quotes", cost: "Included" },
                       ].map(item => (
                         <li key={item.feature} className="flex justify-between text-sm">
@@ -335,7 +333,7 @@ export default function BusinessLanding() {
                   </div>
                 </div>
                 <div className="mt-8 bg-green-500/10 border border-green-500/20 rounded-lg p-6 text-center">
-                  <p className="text-green-400 text-3xl font-bold mb-1">Save $35,000 - $160,000 / year</p>
+                  <p className="text-green-400 text-3xl font-bold mb-1">Save $20,000 - $95,000 / year</p>
                   <p className="text-slate-400">More leads. More reviews. Zero missed calls. Less money out the door.</p>
                 </div>
               </CardContent>
