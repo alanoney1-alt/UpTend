@@ -1,27 +1,30 @@
 # Social Media Posts Log
 
-## March 4, 2026
-- **Date**: March 4, 2026
-- **Time**: 9:30 AM EST
-- **Platforms**: Facebook + Instagram (intended)
-- **Topic**: Plumbing leak detection home tips
-- **Status**: FAILED - Browser control service error
-- **Error**: OpenClaw browser control service not responding despite openclaw profile running
-- **Content**: Prepared in /tmp/social-post-today-content.txt
-- **Image**: Copied to /tmp/social-post-today.png
-- **Action Required**: Manual posting to Meta Business Suite
-- **Business Account**: UpTend (ID: 1415629910045073) - UptendGeorge pages
-- **Next Steps**: Debug browser control service for future automation
+## 2026-03-05 - Thursday
+- **Time:** 9:30-9:35 AM EST
+- **Platforms:** Facebook ✅ AND Instagram ✅ (cross-posted)
+- **Account:** UpTend Business Suite (UptendGeorge + @uptendgeorge)
+- **Topic:** Electrical Safety Tips (electrical-safety-tips)
+- **Content:** Mr. George electrical safety post about broken system, 3 key tips for homeowners
+- **Image:** Modern electrical panel with homeowner's hand (2026-03-05.png)
+- **Status:** ✅ Successfully published to BOTH platforms
+- **Post IDs:** 
+  - Facebook: 122103629307280384 (9:34 AM)
+  - Instagram: Cross-posted with same content
+- **Notes:** 
+  - Used openclaw browser profile (not Chrome extension)
+  - First attempt posted to Facebook only (9:32 AM)
+  - Second attempt successfully cross-posted to both FB + IG (9:34 AM)
+  - Verified correct UpTend business account (not A² Nona)
+  - Image upload worked properly on second attempt
+  - Content complies with all rules: no competitors mentioned, pre-launch messaging, Orlando focus
 
-## Technical Notes
-- Browser profiles showed openclaw running with 5 tabs
-- Meta Business Suite already loaded with correct business ID
-- Browser control API returning "browser not running" errors
-- Possible issue with OpenClaw gateway browser control service
-## 2026-03-04 — Instagram Reel (FAILED)
-- **Topic:** Plumbing Leak Detection
-- **Image:** 2026-03-04.png ✅
-- **Video:** /tmp/uptend-reel-today.mp4 ✅ (uploaded to https://files.catbox.moe/mq9ihh.mp4)
+## Previous Posts
+[Add earlier posts here as they occur]
+## 2026-03-05 — Instagram Reel FAILED
+- **Topic:** electrical-safety-tips
 - **Status:** FAILED — Meta API returned "API access blocked" (OAuthException code 200)
-- **Cause:** META_PAGE_TOKEN likely expired or permissions revoked
-- **Action needed:** Refresh the Meta page access token
+- **Video:** Generated successfully at /tmp/uptend-reel-today.mp4
+- **Catbox URL:** https://files.catbox.moe/t7rbut.mp4
+- **Issue:** META_PAGE_TOKEN is expired or permissions revoked. Needs refresh.
+- **Action needed:** Alan needs to reauthorize the Meta app and update META_PAGE_TOKEN in ~/uptend-openclaw/.env

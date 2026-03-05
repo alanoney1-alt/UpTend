@@ -91,7 +91,7 @@ const PARTNER_CONFIGS: Record<string, PartnerConfig> = {
       "Air Quality Assessment",
       "Heat Pump Service",
     ],
-    georgeGreeting: "Hey! I'm George, the AI service assistant for Alex's team at Comfort Solutions Tech. Tell me what's going on with your AC or heating and I'll scope it out. Alex and the crew handle everything from repairs to full installs. Photos help a ton if you can snap one of the unit.",
+    georgeGreeting: "Hey! I'm George, the service assistant for Alex's team at Comfort Solutions Tech. Tell me what's going on with your AC or heating and I'll scope it out. Alex and the crew handle everything from repairs to full installs. Photos help a ton if you can snap one of the unit.",
     features: [
       { icon: "camera", title: "Photo Scoping", desc: "Snap a photo of your unit. George identifies the brand, model, and visible issues instantly." },
       { icon: "clock", title: "Minutes, Not Days", desc: "Get a scope of work in minutes. No waiting days for an in-home estimate." },
@@ -343,7 +343,7 @@ export default function BrandedPartnerLanding() {
                 <span className="text-sm text-primary font-semibold">View SEO Demo →</span>
               </a>
               <a href={`/partners/${slug}/george`} className="block p-6 bg-card border border-border rounded-2xl hover:border-primary/50 transition-colors">
-                <h3 className="font-bold text-lg mb-2">George, Your AI Front Desk</h3>
+                <h3 className="font-bold text-lg mb-2">George, Your 24/7 Front Desk</h3>
                 <p className="text-sm text-muted-foreground mb-3">George handles customer intake 24/7. He scopes jobs, collects photos, and routes leads straight to you.</p>
                 <span className="text-sm text-primary font-semibold">See What George Can Do →</span>
               </a>
@@ -415,7 +415,7 @@ export default function BrandedPartnerLanding() {
                 <div className="text-center mb-8">
                   <h2 className="text-2xl font-bold mb-2">We Run Your Socials Too</h2>
                   <p className="text-muted-foreground max-w-2xl mx-auto">
-                    George doesn't just handle your phones. We manage your entire social media presence with AI powered content.
+                    George doesn't just handle your phones. We manage your entire social media presence with professional content.
                   </p>
                 </div>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
@@ -450,7 +450,7 @@ export default function BrandedPartnerLanding() {
                 <a href={`/partners/${slug}/george`} className="block p-4 bg-background border border-border rounded-xl hover:border-primary/50 transition-colors text-center">
                   <MessageCircle className="w-6 h-6 text-primary mx-auto mb-2" />
                   <h3 className="font-semibold text-sm mb-1">Meet George</h3>
-                  <p className="text-xs text-muted-foreground">Your AI front desk, service advisor & lead machine</p>
+                  <p className="text-xs text-muted-foreground">Your 24/7 front desk, service advisor & lead machine</p>
                 </a>
                 <a href={`/partners/${slug}/seo-demo`} className="block p-4 bg-background border border-border rounded-xl hover:border-primary/50 transition-colors text-center">
                   <TrendingUp className="w-6 h-6 text-primary mx-auto mb-2" />
@@ -467,7 +467,7 @@ export default function BrandedPartnerLanding() {
 
             {/* Powered by */}
             <div className="text-center text-sm text-muted-foreground">
-              <p>Powered by <span className="font-semibold text-foreground">UpTend</span>. AI powered home service intelligence.</p>
+              <p>Powered by <span className="font-semibold text-foreground">UpTend</span>. Home service intelligence.</p>
             </div>
           </>
         )}
