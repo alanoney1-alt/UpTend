@@ -260,9 +260,20 @@ async function getPartnerInfo(partnerSlug: string): Promise<PartnerInfo | null> 
 
     const { greeting } = phoneResult.rows[0];
     
-    // For now, derive partner name from slug and assume HVAC services
-    // TODO: Replace with actual partner query
-    const partnerName = partnerSlug
+    // Known partners with proper names
+    const KNOWN_PARTNERS: Record<string, { name: string; serviceTypes: string[] }> = {
+      'comfort-solutions-tech': { 
+        name: 'Comfort Solutions Tech', 
+        serviceTypes: ['hvac_repair', 'hvac_install', 'hvac_maintenance'] 
+      },
+      'uptend-main': { 
+        name: 'UpTend', 
+        serviceTypes: ['hvac_repair', 'plumbing', 'electrical', 'junk_removal', 'pressure_washing', 'home_cleaning', 'handyman', 'landscaping', 'painting', 'pool_cleaning', 'carpet_cleaning', 'gutter_cleaning', 'moving_labor'] 
+      },
+    };
+
+    const known = KNOWN_PARTNERS[partnerSlug];
+    const partnerName = known?.name || partnerSlug
       .split('-')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
@@ -270,7 +281,7 @@ async function getPartnerInfo(partnerSlug: string): Promise<PartnerInfo | null> 
     return {
       slug: partnerSlug,
       name: partnerName,
-      serviceTypes: ['hvac_repair', 'hvac_install', 'hvac_maintenance'], // Default HVAC services
+      serviceTypes: known?.serviceTypes || ['hvac_repair', 'hvac_install', 'hvac_maintenance'],
       greeting
     };
   } catch (error: any) {
