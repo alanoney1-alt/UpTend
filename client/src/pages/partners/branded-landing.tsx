@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { useLocalBusinessSchema, useFAQSchema, HVAC_FAQS, PARTNER_FAQS } from "@/components/structured-data";
+import { ServiceRequestForm } from "@/components/service-request-form";
 
 interface PartnerConfig {
   slug: string;
@@ -314,10 +315,33 @@ export default function BrandedPartnerLanding() {
               <h1 className="text-3xl md:text-4xl font-bold mb-4">{config.companyName}</h1>
               <p className="text-lg text-muted-foreground mb-2">{config.tagline}</p>
               <p className="text-base text-muted-foreground max-w-2xl mx-auto mb-8">{config.heroText}</p>
-              <Button size="lg" className="text-lg px-8 gap-2" onClick={startChat}>
-                <MessageCircle className="w-5 h-5" />
-                Talk to George
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button size="lg" className="text-lg px-8 gap-2" onClick={startChat}>
+                  <MessageCircle className="w-5 h-5" />
+                  Chat with George
+                </Button>
+                <a href={`tel:${config.phone}`}>
+                  <Button size="lg" variant="outline" className="text-lg px-8 gap-2">
+                    <Phone className="w-5 h-5" />
+                    {config.phone}
+                  </Button>
+                </a>
+              </div>
+              <p className="text-sm text-muted-foreground mt-4">Or fill out the form below</p>
+            </div>
+
+            {/* Service Request Form */}
+            <div className="max-w-2xl mx-auto mb-12">
+              <Card className="border-2 border-primary/20">
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-bold mb-4">Request Service — No Account Needed</h3>
+                  <ServiceRequestForm
+                    partnerSlug={config.slug}
+                    serviceType={config.serviceType.toLowerCase()}
+                    companyName={config.companyName}
+                  />
+                </CardContent>
+              </Card>
             </div>
 
             {/* Services */}

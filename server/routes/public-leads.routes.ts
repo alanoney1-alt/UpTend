@@ -19,15 +19,14 @@ const router = Router();
  */
 router.post("/service-request", async (req, res) => {
   try {
-    const { name, phone, email, address, service, issue } = req.body;
+    const { name, phone, email, address, service, issue, partner_slug } = req.body;
 
     if (!name || !phone || !issue) {
       return res.status(400).json({ error: "Name, phone, and issue description are required." });
     }
 
-    // Determine partner slug based on service type
-    // For now, HVAC goes to comfort-solutions-tech
-    const partnerSlug = service === "hvac" ? "comfort-solutions-tech" : "uptend-main";
+    // Use explicit partner_slug if provided, otherwise route by service type
+    const partnerSlug = partner_slug || (service === "hvac" ? "comfort-solutions-tech" : "uptend-main");
 
     // Save lead
     const result = await pool.query(
