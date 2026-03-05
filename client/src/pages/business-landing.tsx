@@ -302,8 +302,8 @@ export default function BusinessLanding() {
                         </li>
                       ))}
                       <li className="flex justify-between text-sm pt-3 border-t border-slate-700">
-                        <span className="text-white font-bold">5-6 vendors. 5-6 logins. 5-6 bills.</span>
-                        <span className="text-red-400 font-bold font-mono">$2,144-$8,444</span>
+                        <span className="text-white font-bold">Multiple vendors. Multiple logins. Multiple bills.</span>
+                        <span className="text-red-400 font-bold font-mono">It adds up.</span>
                       </li>
                     </ul>
                   </div>
@@ -333,7 +333,6 @@ export default function BusinessLanding() {
                   </div>
                 </div>
                 <div className="mt-8 bg-green-500/10 border border-green-500/20 rounded-lg p-6 text-center">
-                  <p className="text-green-400 text-3xl font-bold mb-1">Save $20,000 - $95,000 / year</p>
                   <p className="text-slate-400">More leads. More reviews. Zero missed calls. Less money out the door.</p>
                 </div>
               </CardContent>
