@@ -1,0 +1,46 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "summary": "Find and book HVAC service pros in Orlando",
+          "examplePhrases": [
+            "Alexa, open UpTend",
+            "Alexa, ask UpTend to find me AC repair",
+            "Alexa, tell UpTend my AC is broken"
+          ],
+          "keywords": [
+            "HVAC",
+            "AC repair",
+            "air conditioning",
+            "Orlando",
+            "home services",
+            "plumber",
+            "electrician"
+          ],
+          "name": "UpTend Home Services",
+          "description": "UpTend connects you with vetted, licensed home service professionals in the Orlando Metro area. Just tell Alexa what's wrong and we'll have a tech call you back within the hour. HVAC services are live now — AC repair, heating, maintenance, and emergency service. More services coming soon."
+        }
+      },
+      "isAvailableWorldwide": false,
+      "distributionCountries": ["US"],
+      "category": "SMART_HOME"
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "sourceDir": "lambda"
+        }
+      }
+    },
+    "manifestVersion": "1.0",
+    "privacyAndCompliance": {
+      "locales": {
+        "en-US": {
+          "privacyPolicyUrl": "https://uptendapp.com/legal/privacy",
+          "termsOfUseUrl": "https://uptendapp.com/legal/terms"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "up tend",
+      "intents": [
+        {
+          "name": "FindProIntent",
+          "slots": [
+            {
+              "name": "service",
+              "type": "SERVICE_TYPE"
+            },
+            {
+              "name": "neighborhood",
+              "type": "AMAZON.City"
+            }
+          ],
+          "samples": [
+            "find me {service}",
+            "I need {service}",
+            "find {service} in {neighborhood}",
+            "I need {service} in {neighborhood}",
+            "find me a {service} pro",
+            "get me {service} help",
+            "my {service} is broken",
+            "I need help with my {service}",
+            "find a {service} tech",
+            "connect me with {service}"
+          ]
+        },
+        {
+          "name": "RequestServiceIntent",
+          "slots": [
+            {
+              "name": "issue",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "my AC is broken",
+            "my air conditioner stopped working",
+            "my AC is blowing warm air",
+            "my heat isn't working",
+            "I have a {issue}",
+            "help me with {issue}",
+            "something is wrong with my {issue}",
+            "I need someone to fix my {issue}",
+            "my furnace won't turn on",
+            "my AC won't start",
+            "the air conditioner is making a weird noise"
+          ]
+        },
+        {
+          "name": "GetPricingIntent",
+          "slots": [
+            {
+              "name": "service",
+              "type": "SERVICE_TYPE"
+            }
+          ],
+          "samples": [
+            "how much does {service} cost",
+            "what does {service} cost in Orlando",
+            "pricing for {service}",
+            "how much is {service}",
+            "what's the price for {service}"
+          ]
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        }
+      ],
+      "types": [
+        {
+          "name": "SERVICE_TYPE",
+          "values": [
+            { "name": { "value": "HVAC", "synonyms": ["AC", "air conditioning", "air conditioner", "heating", "heat", "cooling", "furnace"] } },
+            { "name": { "value": "plumbing", "synonyms": ["plumber", "pipes", "water heater", "drain"] } },
+            { "name": { "value": "electrical", "synonyms": ["electrician", "wiring", "outlets", "lights"] } },
+            { "name": { "value": "home cleaning", "synonyms": ["house cleaning", "maid service", "cleaning"] } },
+            { "name": { "value": "handyman", "synonyms": ["repair", "fix it", "general repair"] } },
+            { "name": { "value": "landscaping", "synonyms": ["lawn care", "yard work", "mowing"] } },
+            { "name": { "value": "pressure washing", "synonyms": ["power washing"] } },
+            { "name": { "value": "pool cleaning", "synonyms": ["pool service", "pool maintenance"] } },
+            { "name": { "value": "junk removal", "synonyms": ["hauling", "trash removal", "debris removal"] } }
+          ]
+        }
+      ]
+    }
+  }
+}

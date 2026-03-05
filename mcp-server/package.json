@@ -1,0 +1,13 @@
+{
+  "name": "uptend-mcp-server",
+  "version": "1.0.0",
+  "description": "UpTend MCP Server — lets Claude find and book home service pros in Orlando",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}

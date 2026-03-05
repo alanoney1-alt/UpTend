@@ -177,15 +177,22 @@ export function registerAIDiscoveryRoutes(app: Express) {
   // GET /api/discover/services
   // ==========================================
   router.get("/services", (_req: Request, res: Response) => {
+    const LIVE_SERVICES = ["hvac"];
     res.json({
       services: SERVICE_TYPES.map(s => ({
         ...s,
+        status: LIVE_SERVICES.includes(s.key) ? "live" : "coming_soon",
+        canBook: LIVE_SERVICES.includes(s.key),
         pricingUrl: `https://uptendapp.com/api/discover/pricing?service=${s.key}`,
         findProUrl: `https://uptendapp.com/api/discover/find-pro?service=${s.key}`,
-        pageUrl: `https://uptendapp.com/services/${s.key}`,
+        requestUrl: LIVE_SERVICES.includes(s.key) ? `https://uptendapp.com/api/discover/request-service` : null,
+        pageUrl: LIVE_SERVICES.includes(s.key) ? `https://uptendapp.com/services/${s.key}` : `https://uptendapp.com/services`,
       })),
+      liveServices: LIVE_SERVICES,
       totalServices: SERVICE_TYPES.length,
+      liveCount: LIVE_SERVICES.length,
       coverage: "Orlando Metro Area",
+      note: "HVAC is live now. All other services are coming soon — use requestService to waitlist customers.",
     });
   });
 
