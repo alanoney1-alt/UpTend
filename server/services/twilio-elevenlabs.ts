@@ -60,10 +60,12 @@ export async function generateVoiceAudio(
   }
 
   try {
-    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${options.voice || JOSH_VOICE_ID}`, {
+    // output_format is a query parameter for ElevenLabs, not in the body
+    const voiceId = options.voice || JOSH_VOICE_ID;
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=ulaw_8000`, {
       method: 'POST',
       headers: {
-        'Accept': 'audio/mpeg',
+        'Accept': 'audio/basic',
         'Content-Type': 'application/json',
         'xi-api-key': ELEVENLABS_API_KEY
       },
@@ -76,8 +78,7 @@ export async function generateVoiceAudio(
           style: 0.0,
           use_speaker_boost: true,
           speaking_rate: options.speed || 1.15
-        },
-        output_format: 'ulaw_8000' // Twilio's preferred format
+        }
       })
     });
 
@@ -88,7 +89,7 @@ export async function generateVoiceAudio(
     }
 
     // Save audio file
-    const filename = `${nanoid(12)}.wav`; // ulaw_8000 format, .wav extension
+    const filename = `${nanoid(12)}.ulaw`; // ulaw_8000 format for Twilio
     const filePath = path.join(AUDIO_DIR, filename);
     const audioBuffer = await response.arrayBuffer();
     fs.writeFileSync(filePath, Buffer.from(audioBuffer));
