@@ -7,7 +7,8 @@
  */
 
 import { pool } from '../db';
-import { georgeVoiceChat } from './george-voice';
+import { georgeVoiceChat, generateWarmAudio, getRandomAck, preWarmAckAudio } from './george-voice';
+import { getAudioBuffer } from './twilio-elevenlabs';
 import { generateVoiceAudio, generateTwiMLWithAudio, generateTwiMLHangup, generateTwiMLGather } from './twilio-elevenlabs';
 import { nanoid } from 'nanoid';
 
@@ -112,20 +113,17 @@ export async function processVoiceInput(
 
     const { partner_slug: partnerSlug, caller_number: callerNumber, called_number: calledNumber } = callResult.rows[0];
 
-    // Handle no speech or very low confidence (0.3 threshold — Twilio often returns 0.4-0.6)
+    // Handle no speech or very low confidence
     if (!speechResult || (confidence !== undefined && confidence < 0.3)) {
-      const clarificationPrompt = "I'm still here. Go ahead and tell me what's going on.";
-      
-      const audioResult = await generateVoiceAudio(clarificationPrompt);
-      if (audioResult) {
-        const processUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/api/voice/partner/process?callSid=${callSid}`;
-        return generateTwiMLWithAudio(audioResult.audioUrl, processUrl);
-      } else {
-        return generateTwiMLGather(
-          clarificationPrompt,
-          `${process.env.BASE_URL || 'http://localhost:5000'}/api/voice/partner/process?callSid=${callSid}`
-        );
+      const processUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/api/voice/partner/process?callSid=${callSid}`;
+      const noSpeechAudio = await generateWarmAudio("Hey, you still there? Just let me know what's going on.");
+      if (noSpeechAudio) {
+        const { storeAudioBuffer } = await import('./twilio-elevenlabs');
+        storeAudioBuffer(noSpeechAudio.filename, noSpeechAudio.buffer);
+        const audioUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/api/voice/audio/${noSpeechAudio.filename}`;
+        return generateTwiMLWithAudio(audioUrl, processUrl);
       }
+      return generateTwiMLGather("Hey, you still there?", processUrl);
     }
 
     // Get conversation history
@@ -150,54 +148,55 @@ export async function processVoiceInput(
       content: turn.content
     }));
 
-    // Use lightweight voice-specific George (gpt-4o-mini, ~500 token prompt)
-    // instead of full George agent (gpt-4o, 78K token prompt)
-    console.log(`[Partner Voice] Calling George Voice (lightweight) for partner: ${partnerSlug}`);
+    // Lightweight voice George: gpt-4o-mini + warm TTS
+    console.log(`[Partner Voice] Calling George Voice for partner: ${partnerSlug}`);
     const startTime = Date.now();
-    const georgeResult = await georgeVoiceChat(speechResult, georgeHistory, partnerContext);
-    console.log(`[Partner Voice] George responded in ${Date.now() - startTime}ms via ${georgeResult.provider}`);
     
-    // Clean response for voice
+    // Get AI response
+    const georgeResult = await georgeVoiceChat(speechResult, georgeHistory, partnerContext);
+    console.log(`[Partner Voice] AI: ${georgeResult.latencyMs}ms (${georgeResult.provider})`);
+    
+    // Clean and limit response
     const cleanResponse = cleanResponseForVoice(georgeResult.response);
+    
+    // Generate warm TTS audio
+    const ttsStart = Date.now();
+    const warmAudio = await generateWarmAudio(cleanResponse);
+    console.log(`[Partner Voice] TTS: ${Date.now() - ttsStart}ms`);
+    console.log(`[Partner Voice] Total pipeline: ${Date.now() - startTime}ms`);
     
     // Log George's response
     await logConversationTurn(callSid, turnNumber + 1, 'george', cleanResponse);
+
+    const processUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/api/voice/partner/process?callSid=${callSid}`;
 
     // Check if George wants to end the call
     if (shouldEndCall(cleanResponse, [])) {
       await updateCallStatus(callSid, 'completed');
       
-      const audioResult = await generateVoiceAudio(cleanResponse);
-      if (audioResult) {
+      if (warmAudio) {
+        const { storeAudioBuffer } = await import('./twilio-elevenlabs');
+        storeAudioBuffer(warmAudio.filename, warmAudio.buffer);
+        const audioUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/api/voice/audio/${warmAudio.filename}`;
         return `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Play>${audioResult.audioUrl}</Play>
+  <Play>${audioUrl}</Play>
   <Hangup/>
 </Response>`;
-      } else {
-        return generateTwiMLHangup(cleanResponse);
       }
+      return generateTwiMLHangup(cleanResponse);
     }
 
-    // Generate audio response and continue conversation
-    const audioResult = await generateVoiceAudio(cleanResponse);
-    
-    if (audioResult) {
-      // Update audio URL in conversation log
-      await pool.query(
-        `UPDATE voice_conversation_turns SET audio_url = $1 WHERE call_sid = $2 AND turn_number = $3`,
-        [audioResult.audioUrl, callSid, turnNumber + 1]
-      );
-      
-      const processUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/api/voice/partner/process?callSid=${callSid}`;
-      return generateTwiMLWithAudio(audioResult.audioUrl, processUrl);
-    } else {
-      // Fallback without audio
-      return generateTwiMLGather(
-        cleanResponse,
-        `${process.env.BASE_URL || 'http://localhost:5000'}/api/voice/partner/process?callSid=${callSid}`
-      );
+    // Continue conversation with warm audio
+    if (warmAudio) {
+      const { storeAudioBuffer } = await import('./twilio-elevenlabs');
+      storeAudioBuffer(warmAudio.filename, warmAudio.buffer);
+      const audioUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/api/voice/audio/${warmAudio.filename}`;
+      return generateTwiMLWithAudio(audioUrl, processUrl);
     }
+    
+    // Fallback: Twilio's built-in voice
+    return generateTwiMLGather(cleanResponse, processUrl);
   } catch (error: any) {
     console.error('[Partner Voice] Error processing voice input:', error);
     return generateTwiMLGather(

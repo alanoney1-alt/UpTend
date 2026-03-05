@@ -31,11 +31,20 @@ export function getAudioBuffer(filename: string): Buffer | null {
   return audioBufferStore.get(filename) || null;
 }
 
+/**
+ * Store an audio buffer for serving via the audio route
+ */
+export function storeAudioBuffer(filename: string, buffer: Buffer): void {
+  audioBufferStore.set(filename, buffer);
+}
+
 export interface TTSOptions {
   voice?: string;
   model?: string;
   speed?: number;
   stability?: number;
+  similarity?: number;
+  style?: number;
 }
 
 /**
@@ -87,9 +96,9 @@ export async function generateVoiceAudio(
         text: cleanText,
         model_id: options.model || 'eleven_turbo_v2_5',
         voice_settings: {
-          stability: options.stability || 0.5,
-          similarity_boost: 0.8,
-          style: 0.15,
+          stability: options.stability || 0.3,
+          similarity_boost: options.similarity || 0.85,
+          style: options.style || 0.45,
           use_speaker_boost: true,
           speaking_rate: options.speed || 1.0
         }

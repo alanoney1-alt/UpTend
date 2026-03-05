@@ -343,6 +343,9 @@ function validateEnvironment() {
 
     httpServer.listen(listenOptions, () => {
       log(`serving on port ${port}`);
+      
+      // Pre-warm George voice audio (non-blocking)
+      import('./services/george-voice').then(m => m.preWarmAckAudio()).catch(() => {});
     });
   } catch (error) {
     console.error('Failed to initialize server:', error);

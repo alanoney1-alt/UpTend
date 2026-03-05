@@ -86,6 +86,7 @@ const AcademySyllabus = lazy(() => import("@/pages/academy-syllabus"));
 const ProVerification = lazy(() => import("@/pages/pro-verification"));
 const ProSustainabilityCert = lazy(() => import("@/pages/pro-sustainability-cert"));
 const Services = lazy(() => import("@/pages/services"));
+const HVACService = lazy(() => import("@/pages/services/hvac"));
 const Certifications = lazy(() => import("@/pages/certifications"));
 const HomeAudit = lazy(() => import("@/pages/home-audit"));
 const HomeHealthAudit = lazy(() => import("@/pages/home-health-audit"));
@@ -420,6 +421,7 @@ function Router() {
       <Route path="/academy-syllabus" component={AcademySyllabus} />
       <Route path="/academy/:slug" component={AcademySyllabus} />
       <Route path="/services" component={Services} />
+      <Route path="/services/hvac" component={HVACService} />
       <Route path="/services/home-audit" component={HomeAudit} />
       <Route path="/services/audit" component={HomeAudit} />
       <Route path="/home-audit" component={HomeAudit} />
