@@ -307,6 +307,88 @@ export function registerAIDiscoveryRoutes(app: Express) {
   });
 
   // ==========================================
+  // POST /api/discover/request-service — Submit a service request from AI assistants
+  // ==========================================
+  router.post("/request-service", async (req: Request, res: Response) => {
+    try {
+      const { name, phone, email, address, service, issue, zip, neighborhood } = req.body;
+
+      if (!name || !phone) {
+        return res.status(400).json({
+          error: "Name and phone number are required to connect you with a pro.",
+          hint: "Ask the customer for their name and phone number.",
+        });
+      }
+
+      if (!service && !issue) {
+        return res.status(400).json({
+          error: "Please describe what service is needed or what the issue is.",
+          hint: "Ask what's going on with their home.",
+        });
+      }
+
+      // Route to the right partner
+      const serviceType = (service || "").toLowerCase();
+      const partnerSlug = serviceType.includes("hvac") || serviceType.includes("ac") || serviceType.includes("heat")
+        ? "comfort-solutions-tech"
+        : "uptend-main";
+
+      const isLive = serviceType.includes("hvac") || serviceType.includes("ac") || serviceType.includes("heat");
+
+      // Save lead
+      await db.execute(sql`
+        INSERT INTO partner_leads (partner_slug, customer_name, customer_phone, customer_email, service_type, notes, source, status, created_at)
+        VALUES (${partnerSlug}, ${name}, ${phone}, ${email || null}, ${serviceType || 'general'}, 
+                ${[issue, address ? `Address: ${address}` : null, zip ? `ZIP: ${zip}` : null, neighborhood ? `Area: ${neighborhood}` : null].filter(Boolean).join('. ')},
+                'chatgpt', 'new', NOW())
+      `);
+
+      // Send email notification
+      try {
+        if (process.env.SENDGRID_API_KEY) {
+          const sgMail = (await import("@sendgrid/mail")).default;
+          sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+          await sgMail.send({
+            to: "alan@uptendapp.com",
+            from: "alan@uptendapp.com",
+            subject: `🤖 ChatGPT Lead: ${name} — ${serviceType || issue || 'Home Service'}`,
+            html: `<h2>New Lead from ChatGPT</h2>
+<p><strong>Name:</strong> ${name}</p>
+<p><strong>Phone:</strong> <a href="tel:${phone}">${phone}</a></p>
+${email ? `<p><strong>Email:</strong> ${email}</p>` : ''}
+${address ? `<p><strong>Address:</strong> ${address}</p>` : ''}
+${zip ? `<p><strong>ZIP:</strong> ${zip}</p>` : ''}
+<p><strong>Service:</strong> ${serviceType || 'Not specified'}</p>
+<p><strong>Issue:</strong> ${issue || 'Not specified'}</p>
+<p><strong>Source:</strong> ChatGPT AI Assistant</p>
+<hr><p><a href="https://uptendapp.com/partners/${partnerSlug}/leads">View leads →</a></p>`,
+          });
+        }
+      } catch (e) { /* don't fail on email */ }
+
+      if (isLive) {
+        res.json({
+          success: true,
+          message: `Got it! ${name}, a licensed HVAC technician from Comfort Solutions Tech will call you back at ${phone} within the hour.`,
+          partner: "Comfort Solutions Tech LLC",
+          phone_for_partner: "(407) 860-8842",
+          estimated_callback: "Within 1 hour",
+          next_steps: "A tech will call you to confirm the appointment and give you an exact price before any work starts.",
+        });
+      } else {
+        res.json({
+          success: true,
+          message: `Thanks ${name}! We're launching ${serviceType || 'that service'} in Orlando very soon. We've saved your info and will reach out the moment it's available.`,
+          status: "waitlisted",
+          note: "HVAC services are available right now if you need AC or heating help.",
+        });
+      }
+    } catch (err: any) {
+      console.error("[AI Discovery] Service request error:", err);
+      res.status(500).json({ error: "Something went wrong. Please try calling (855) 901-2072 directly." });
+    }
+  });
+
   // GET /api/discover/openapi — ChatGPT GPT Actions spec
   // ==========================================
   router.get("/openapi", (_req: Request, res: Response) => {
@@ -402,7 +484,7 @@ const OPENAPI_SPEC = {
   openapi: "3.1.0",
   info: {
     title: "UpTend Home Services API",
-    description: "Find vetted, licensed home service professionals in the Orlando Metro area. Get pricing, availability, and book instantly through UpTend's AI-powered platform.",
+    description: "Find and book vetted, licensed home service professionals in Orlando Metro. HVAC is LIVE — use requestService to submit a booking and a real tech calls the customer back within 1 hour. Other services coming soon. Workflow: 1) findPro to search, 2) collect customer name+phone, 3) requestService to submit. No auth required.",
     version: "1.0.0",
     contact: {
       name: "UpTend",
@@ -539,6 +621,65 @@ const OPENAPI_SPEC = {
         responses: {
           "200": {
             description: "Partner details",
+          },
+        },
+      },
+    },
+    "/api/discover/request-service": {
+      post: {
+        operationId: "requestService",
+        summary: "Submit a service request to connect customer with a pro",
+        description: "Submit a home service request on behalf of a customer. Collects their info and connects them with a vetted, licensed professional. HVAC is available NOW — a tech will call back within 1 hour. Other services are coming soon — customer gets waitlisted and notified when available. IMPORTANT: Always collect the customer's name and phone number before calling this endpoint.",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["name", "phone"],
+                properties: {
+                  name: { type: "string", description: "Customer's full name" },
+                  phone: { type: "string", description: "Customer's phone number (required — this is how the tech will call them back)" },
+                  email: { type: "string", description: "Customer's email (optional)" },
+                  address: { type: "string", description: "Service address (street, city, state)" },
+                  zip: { type: "string", description: "ZIP code for service area matching" },
+                  service: { type: "string", description: "Service type: hvac, plumbing, electrical, etc. Use 'hvac' for any AC, heating, or air conditioning issue." },
+                  issue: { type: "string", description: "Description of the problem or service needed (e.g., 'AC blowing warm air', 'furnace won't start')" },
+                  neighborhood: { type: "string", description: "Neighborhood name if known (e.g., Lake Nona, Windermere)" },
+                },
+              },
+              example: {
+                name: "Mike Johnson",
+                phone: "(407) 555-1234",
+                address: "123 Oak Street, Orlando FL",
+                zip: "32827",
+                service: "hvac",
+                issue: "AC blowing warm air since this morning",
+                neighborhood: "Lake Nona",
+              },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Service request submitted successfully. For HVAC: tech calls back within 1 hour. For other services: customer is waitlisted.",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    message: { type: "string", description: "Confirmation message to show the customer" },
+                    partner: { type: "string", description: "Name of the matched partner company (HVAC only)" },
+                    estimated_callback: { type: "string", description: "When to expect a callback" },
+                    next_steps: { type: "string", description: "What happens next" },
+                  },
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Missing required info — ask customer for name and phone",
           },
         },
       },
