@@ -4916,6 +4916,29 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
     VALUES ($1, $2, $3, $4, $5, $6, 'george') RETURNING id`,
    [input.partner_slug, input.customer_name, input.customer_email || null, input.customer_phone || null, input.service_type || null, input.notes || null]
   );
+
+  // Instant SMS notification to partner
+  try {
+    const PARTNER_NOTIFICATIONS: Record<string, { phone: string; name: string }> = {
+      'comfort-solutions-tech': { phone: '+14078608842', name: 'Alex' },
+      'uptend-main': { phone: '+18503199550', name: 'Alan' },
+    };
+    const notify = PARTNER_NOTIFICATIONS[input.partner_slug];
+    if (notify && process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+      const twClient = (await import("twilio")).default(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+      const smsBody = `New UpTend Lead!\n${input.customer_name}${input.customer_phone ? '\nPhone: ' + input.customer_phone : ''}${input.service_type ? '\nService: ' + input.service_type : ''}${input.notes ? '\nNotes: ' + input.notes : ''}\n\nView: https://uptendapp.com/partners/${input.partner_slug}/leads`;
+      await twClient.messages.create({
+        body: smsBody,
+        from: '+18559012072',
+        to: notify.phone,
+      });
+      console.log(`[Partner Lead] SMS sent to ${notify.name} at ${notify.phone}`);
+    }
+  } catch (smsErr: any) {
+    console.error('[Partner Lead] SMS notification failed:', smsErr.message);
+    // Don't fail the lead save if SMS fails
+  }
+
   return { success: true, leadId: leadResult.rows[0]?.id, message: `Lead saved for ${input.customer_name}` };
  }
  case "save_partner_onboarding":
