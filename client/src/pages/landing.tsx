@@ -158,7 +158,7 @@ function HeroSection() {
 
         <p className="text-white/50 text-xs md:text-sm font-semibold uppercase tracking-[0.2em] mb-4">Home Intelligence</p>
         <p className="text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-3 leading-relaxed">
-          Stop calling around for your home service needs. Just tell George. He figures out exactly what you need, gives you a locked price in 60 seconds, and sends a vetted pro to your door.
+          HVAC services live now in Orlando Metro. Tell George what's wrong, fill out a quick form, or just call us. We'll match you with a vetted pro and have them call you back within the hour.
         </p>
         <p className="text-white/50 text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed font-light">
           Background-checked. Insured. No surprises. No haggling. Just done.
@@ -185,35 +185,37 @@ function HeroSection() {
         {/* Service category selector */}
         <p className="text-white/50 text-sm font-semibold uppercase tracking-widest mb-4">What do you need?</p>
         <div className="flex flex-wrap justify-center gap-2.5 max-w-3xl mx-auto mb-10">
+          {/* HVAC — LIVE */}
+          <Link
+            href="/services/hvac"
+            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-[#F47C20] border border-[#F47C20] text-white text-sm font-bold shadow-lg shadow-[#F47C20]/25 hover:scale-[1.03] transition-all duration-200"
+          >
+            <Wrench className="w-4 h-4" />
+            HVAC Services
+            <span className="ml-1 text-[10px] bg-white/20 px-1.5 py-0.5 rounded-full">LIVE</span>
+          </Link>
+          {/* Coming Soon services */}
           {[
-            { key: "junk-removal", label: "Junk Removal", icon: Truck },
-            { key: "pressure-washing", label: "Pressure Washing", icon: Waves },
-            { key: "gutter-cleaning", label: "Gutter Cleaning", icon: ArrowUpFromLine },
-            { key: "home-cleaning", label: "Home Cleaning", icon: Sparkles },
-            { key: "handyman", label: "Handyman", icon: Wrench },
-            { key: "landscaping", label: "Landscaping", icon: Trees },
-            { key: "moving-labor", label: "Moving Labor", icon: Package },
-            { key: "demolition", label: "Demolition", icon: Zap },
-            { key: "garage-cleanout", label: "Garage Cleanout", icon: Home },
-            { key: "pool-cleaning", label: "Pool Cleaning", icon: Waves },
-            { key: "carpet-cleaning", label: "Carpet Cleaning", icon: Sparkles },
-            { key: "painting", label: "Painting", icon: Paintbrush },
+            { label: "Plumbing", icon: Waves },
+            { label: "Electrical", icon: Zap },
+            { label: "Home Cleaning", icon: Sparkles },
+            { label: "Handyman", icon: Wrench },
+            { label: "Landscaping", icon: Trees },
+            { label: "Pressure Washing", icon: Waves },
+            { label: "Junk Removal", icon: Truck },
+            { label: "Pool Cleaning", icon: Waves },
+            { label: "Painting", icon: Paintbrush },
           ].map((svc) => (
-            <Link
-              key={svc.key}
-              href={`/services/${svc.key}`}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/90 text-sm font-medium hover:bg-[#F47C20] hover:border-[#F47C20] hover:text-white transition-all duration-200 hover:shadow-lg hover:shadow-[#F47C20]/20 hover:scale-[1.03]"
+            <button
+              key={svc.label}
+              onClick={() => window.dispatchEvent(new CustomEvent("george:open", { detail: { message: `I need ${svc.label.toLowerCase()} service` } }))}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/60 text-sm font-medium hover:bg-white/15 hover:text-white/80 transition-all duration-200"
             >
               <svc.icon className="w-3.5 h-3.5" />
               {svc.label}
-            </Link>
+              <span className="ml-1 text-[9px] opacity-60">SOON</span>
+            </button>
           ))}
-          <button
-            onClick={() => window.dispatchEvent(new CustomEvent("george:open"))}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#F47C20]/20 border border-[#F47C20]/30 text-[#F47C20] text-sm font-medium hover:bg-[#F47C20] hover:text-white transition-all duration-200"
-          >
-            Something else? Ask George
-          </button>
         </div>
 
         <div className="flex justify-center mb-10">
