@@ -781,6 +781,9 @@ _Here's exactly what happens when a partner signs up._
 - Email lead notifications
 - Monthly performance summary
 - Email support
+- Social media management (3 posts/week from your real job photos)
+- Social profile setup (Facebook, Instagram, Google Business)
+- AI search engine optimization (so ChatGPT, Perplexity, and Siri recommend you)
 
 **Best For:** Solo operators or 1 to 3 person crews just getting started with digital lead generation
 
@@ -811,6 +814,8 @@ _Here's exactly what happens when a partner signs up._
 - Weekly performance reports
 - Google Business Profile optimization
 - Quarterly strategy sessions
+- Full brand building (directory listings: Yelp, BBB, Nextdoor, Bing Places, niche directories)
+- Boosted post recommendations when organic content gets traction
 
 **Best For:** 3 to 10 person companies ready to dominate their local market
 
@@ -858,17 +863,31 @@ _Here's exactly what happens when a partner signs up._
 
 ---
 
-### Social Media Add On
+### Social Media — INCLUDED IN EVERY PLAN
 
-**$500 to $800/month** (available on any tier)
+**Not an add on. Not optional. Your brand is our job.**
 
-**What's Included:**
-- AI powered content creation (12 to 20 posts per month)
-- Multi platform posting (Facebook, Instagram, TikTok)
-- Local community engagement
-- Monthly content calendar
-- Performance reporting
-- Brand voice consistency
+Every partner gets social media management at no extra cost. This is how we build your brand and make AI search engines recommend you.
+
+**What's Included (Every Plan):**
+- We set up your social profiles if you don't have them (Facebook page, Instagram, Google Business)
+- 3 posts per week using YOUR real photos and videos from actual jobs
+- We write the copy, design the graphics, schedule everything
+- Before/after shots, job-in-progress clips, team highlights
+- Posts link back to your branded UpTend page (all leads flow through us)
+- Monthly content calendar you can review
+- Performance reporting on engagement and reach
+
+**What We Need From You:**
+- 5 to 10 photos or short videos per week from your jobs
+- Before/after shots, team photos, equipment pics, anything real
+- Just text or email them to us. We handle the rest.
+
+**Boosted Posts (Optional, You Pay Ad Spend):**
+- When a post gets organic traction, we recommend boosting it
+- You approve the budget, we run the ad
+- Targeted to your service area neighborhoods
+- Typical boost: $5 to $25 per post, massive local reach
 
 ---
 
@@ -1011,7 +1030,7 @@ _Memorize these. Practice them. Every objection is an opportunity._
 | **AI Intake (24/7)** | ✅ George AI | ❌ | ❌ | ❌ | ❌ | ❌ (build your own) |
 | **Lead Generation** | ✅ Exclusive, organic | ❌ (dispatching only) | ✅ (paid ads focused) | ⚠️ Shared leads | ⚠️ Shared leads | ❌ (build your own) |
 | **SEO Pages** | ✅ 5 to unlimited | ❌ | ✅ (agency managed) | ❌ | ❌ | ❌ (build your own) |
-| **Social Media Mgmt** | ✅ (add on) | ❌ | ⚠️ (limited) | ❌ | ❌ | ❌ (build your own) |
+| **Social Media Mgmt** | ✅ Included (every plan) | ❌ | ⚠️ (limited) | ❌ | ❌ | ❌ (build your own) |
 | **Review Automation** | ✅ Included | ⚠️ (limited) | ✅ | ❌ | ❌ | ❌ (build your own) |
 | **CRM/Lead Tracking** | ✅ Included | ✅ Full FSM | ❌ | ❌ | ❌ | ✅ (build your own) |
 | **Scheduling/Dispatch** | ⚠️ (basic) | ✅ Full featured | ❌ | ❌ | ❌ | ❌ (build your own) |
@@ -1085,9 +1104,96 @@ _Copy this template for each new case study. Aim to have at least one per vertic
 
 ---
 
+## 11. The AI Search Revolution — Your #1 Pitch Weapon
+
+_This is the future, and most home service companies have zero idea it's coming. Use this._
+
+### The Pitch
+
+"Google Ads are dying. Here's what's replacing them."
+
+Right now, more and more people are skipping Google entirely. They're asking ChatGPT, asking Perplexity, asking Siri, asking Alexa: 'Who's the best HVAC company near me?' And the AI gives them ONE answer. Not ten blue links. Not a list of ads. One recommendation.
+
+Where does that answer come from? Your digital presence. Your reviews. Your content. Your brand. If you don't have those things, the AI doesn't know you exist. And it recommends your competitor instead.
+
+### The Numbers That Close Deals
+
+- 87% of ChatGPT citations match Bing's top search results
+- AI answer engines pull from reviews, directory listings, structured data, and real content
+- Companies with zero reviews and no content are INVISIBLE to AI search
+- By 2027, an estimated 40%+ of search traffic will go through AI, not Google
+
+### How UpTend Solves This
+
+"This is what we do for you. We build your brand across every platform that AI pulls from."
+
+1. **Google Business Profile** — optimized with the right categories, services, photos, and attributes
+2. **Directory listings** — Yelp, BBB, Nextdoor, Bing Places, industry-specific directories
+3. **SEO content** — pages that answer the exact questions people ask AI
+4. **Social media** — real content from real jobs that builds brand authority
+5. **Reviews** — automated collection of outcome-focused reviews that AI loves
+6. **Structured data** — technical markup that tells AI exactly what you do, where, and how much
+7. **AI-specific optimization** — llms.txt, answer capsules, citation-formatted content
+
+"You don't need to understand any of this. That's our job. You send us photos of your work. We make sure every AI search engine in the world knows your name."
+
+### The Urgency Close
+
+"Here's the thing. Right now, the companies that show up in AI search are the ones who started building their digital presence early. Your competitors haven't figured this out yet. If you start NOW, by the time they realize AI is the game, you're already the answer. This is a land grab. First movers win."
+
+### Objection: "I don't believe AI will replace Google."
+
+"You don't have to. Everything we build for AI visibility ALSO ranks you higher on regular Google. Better SEO, better reviews, better content, better directory listings. It's not either/or. It's both. But the companies who are ready for AI search will have a massive advantage over those who aren't."
+
+---
+
+## 12. Brand Building — The Core Promise
+
+_Every partner MUST have a brand. This is non-negotiable._
+
+### Why Brand Matters More Than Leads
+
+Leads are temporary. A brand is permanent. Any company can buy leads from Angi. But when a customer asks AI "who's the best HVAC company in Orlando" — the answer is a BRAND, not a lead.
+
+### What We Build For Every Partner
+
+**Day 1:**
+- Professional social media profiles (Facebook page, Instagram, Google Business)
+- Branded UpTend partner page with their logo, colors, services, and service area
+- Consistent NAP (name, address, phone) across all platforms
+
+**Week 1 to 2:**
+- Directory listings submitted (Yelp, BBB, Nextdoor, Bing Places, niche directories)
+- First batch of social content published using their real job photos
+- Google Business Profile fully optimized
+
+**Ongoing:**
+- 3 posts per week from their real work (before/after, team, equipment, tips)
+- Review collection driving 5-star reviews with specific outcomes mentioned
+- SEO pages ranking their brand for local searches
+- AI visibility growing every week
+
+### The Partner's Only Job
+
+Send us photos and videos. That's it. 5 to 10 per week from real jobs. Before/after shots, team working, finished results. We turn those into a brand that dominates local search and AI recommendations.
+
+### Partner Social Media Rules
+
+- Their social profiles link to their branded UpTend page (uptendapp.com/partners/[slug])
+- Posts say "Book through UpTend" — never their personal phone number
+- All leads flow through UpTend. That's the deal.
+- We cross-promote on UpTend's own social channels
+- Their photos, their name, their brand — powered by UpTend
+
+---
+
 ## Quick Reference: The 60 Second Pitch
 
-> "UpTend is a done for you lead generation platform built specifically for home service companies. We build you a branded page, put George (our AI) on it to answer every customer inquiry 24/7, rank you on Google in every neighborhood you serve, manage your social media, and automate your review collection. All for a flat monthly fee. No shared leads, no long term contracts. Most of our partners break even with just 2 to 3 extra jobs per month. Everything after that is profit you weren't getting before."
+> "Google Ads are dying. AI is becoming the search engine. When someone asks ChatGPT or Siri 'who's the best HVAC company near me,' the AI gives ONE answer based on your digital presence, your reviews, and your brand. If you don't have those? You're invisible.
+>
+> UpTend builds all of that for you. We create your brand, manage your social media with your real job photos, optimize your Google profile, get you listed on every directory, collect reviews, and make sure every AI search engine recommends YOU. Plus George, our AI, answers every customer inquiry 24/7 on your branded page.
+>
+> You don't need to understand SEO or AI or algorithms. You just send us photos of your work and do great jobs. We handle everything else. No shared leads, no long term contracts. Your competitors haven't figured this out yet. If you start now, by the time they do, you're already the answer."
 
 ---
 
