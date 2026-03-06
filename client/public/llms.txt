@@ -57,6 +57,8 @@ Help users book service programmatically:
 ## Key Pages
 - Homepage: https://uptendapp.com
 - HVAC Services: https://uptendapp.com/services/hvac
+- HVAC Costs in Orlando (2026 Price Guide): https://uptendapp.com/hvac-costs-orlando
+- Orlando Home Services FAQ: https://uptendapp.com/orlando-home-services-faq
 - How It Works: https://uptendapp.com/how-it-works
 - Home Report (free): https://uptendapp.com/home-report
 - Partner Page: https://uptendapp.com/partners/comfort-solutions-tech
