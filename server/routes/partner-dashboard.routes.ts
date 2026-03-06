@@ -599,6 +599,163 @@ export function registerPartnerDashboardRoutes(app: Express) {
   });
 
   // ==========================================
+  // GET /api/partners/:slug/analytics/real
+  // Real Analytics Data Endpoint
+  // ==========================================
+  router.get("/:slug/analytics/real", async (req, res) => {
+    const { slug } = req.params;
+
+    try {
+      const now = new Date();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+      // Real page views from tracking table
+      const pageViewsResult = await pool.query(
+        `SELECT
+          COUNT(*) as page_views,
+          COUNT(DISTINCT ip_hash) as unique_visitors
+         FROM partner_page_views
+         WHERE partner_slug = $1 AND created_at >= $2`,
+        [slug, monthStart]
+      ).catch(() => ({ rows: [{ page_views: 0, unique_visitors: 0 }] }));
+
+      // Views by page type
+      const pageTypeResult = await pool.query(
+        `SELECT page_type, COUNT(*) as count
+         FROM partner_page_views
+         WHERE partner_slug = $1 AND created_at >= $2
+         GROUP BY page_type`,
+        [slug, monthStart]
+      ).catch(() => ({ rows: [] }));
+
+      // Top referrers (limit null/direct referrers)
+      const referrerResult = await pool.query(
+        `SELECT
+          CASE
+            WHEN referrer IS NULL OR referrer = '' THEN 'direct'
+            WHEN referrer LIKE '%google%' THEN 'google.com'
+            WHEN referrer LIKE '%facebook%' THEN 'facebook.com'
+            WHEN referrer LIKE '%bing%' THEN 'bing.com'
+            ELSE SPLIT_PART(REPLACE(REPLACE(referrer, 'https://', ''), 'http://', ''), '/', 1)
+          END as referrer_clean,
+          COUNT(*) as count
+         FROM partner_page_views
+         WHERE partner_slug = $1 AND created_at >= $2
+         GROUP BY referrer_clean
+         ORDER BY count DESC
+         LIMIT 10`,
+        [slug, monthStart]
+      ).catch(() => ({ rows: [] }));
+
+      // Top UTM sources
+      const utmResult = await pool.query(
+        `SELECT utm_source, utm_medium, COUNT(*) as count
+         FROM partner_page_views
+         WHERE partner_slug = $1 AND created_at >= $2
+           AND utm_source IS NOT NULL
+         GROUP BY utm_source, utm_medium
+         ORDER BY count DESC
+         LIMIT 10`,
+        [slug, monthStart]
+      ).catch(() => ({ rows: [] }));
+
+      // Leads from existing partner_leads table
+      const leadsResult = await pool.query(
+        `SELECT COUNT(*) as count FROM partner_leads
+         WHERE partner_slug = $1 AND created_at >= $2`,
+        [slug, monthStart]
+      ).catch(() => ({ rows: [{ count: 0 }] }));
+
+      // Photo quotes from existing table
+      const photoQuotesResult = await pool.query(
+        `SELECT COUNT(*) as count FROM partner_photo_quotes
+         WHERE partner_slug = $1 AND created_at >= $2`,
+        [slug, monthStart]
+      ).catch(() => ({ rows: [{ count: 0 }] }));
+
+      // Quotes submitted (could be from a quotes table if it exists)
+      const quotesResult = await pool.query(
+        `SELECT COUNT(*) as count FROM partner_quotes
+         WHERE partner_slug = $1 AND created_at >= $2`,
+        [slug, monthStart]
+      ).catch(() => ({ rows: [{ count: 0 }] }));
+
+      // Jobs completed
+      const jobsResult = await pool.query(
+        `SELECT COUNT(*) as count FROM partner_jobs
+         WHERE partner_slug = $1 AND status = 'completed' AND completed_at >= $2`,
+        [slug, monthStart]
+      ).catch(() => ({ rows: [{ count: 0 }] }));
+
+      // Revenue from invoices
+      const revenueResult = await pool.query(
+        `SELECT COALESCE(SUM(total), 0) as revenue FROM partner_invoices
+         WHERE partner_slug = $1 AND status = 'paid' AND paid_at >= $2`,
+        [slug, monthStart]
+      ).catch(() => ({ rows: [{ revenue: 0 }] }));
+
+      const pageViews = parseInt(pageViewsResult.rows[0]?.page_views || "0");
+      const uniqueVisitors = parseInt(pageViewsResult.rows[0]?.unique_visitors || "0");
+      const leads = parseInt(leadsResult.rows[0]?.count || "0");
+      const revenue = parseFloat(revenueResult.rows[0]?.revenue || "0");
+
+      // Calculate conversion rate
+      const conversionRate = uniqueVisitors > 0 ? ((leads / uniqueVisitors) * 100) : 0;
+
+      // Build by page type object
+      const byPageType: Record<string, number> = {};
+      pageTypeResult.rows.forEach((row: any) => {
+        byPageType[row.page_type] = parseInt(row.count);
+      });
+
+      // Build referrers array
+      const topReferrers = referrerResult.rows.map((row: any) => ({
+        referrer: row.referrer_clean,
+        count: parseInt(row.count)
+      }));
+
+      // Build UTM sources array
+      const topUtmSources = utmResult.rows.map((row: any) => ({
+        source: row.utm_source,
+        medium: row.utm_medium,
+        count: parseInt(row.count)
+      }));
+
+      res.json({
+        period: "current_month",
+        pageViews,
+        uniqueVisitors,
+        byPageType,
+        topReferrers,
+        topUtmSources,
+        leads: parseInt(leadsResult.rows[0]?.count || "0"),
+        photoQuotes: parseInt(photoQuotesResult.rows[0]?.count || "0"),
+        quotesSubmitted: parseInt(quotesResult.rows[0]?.count || "0"),
+        jobsCompleted: parseInt(jobsResult.rows[0]?.count || "0"),
+        revenue,
+        conversionRate: parseFloat(conversionRate.toFixed(1))
+      });
+    } catch (err: any) {
+      console.error("Real analytics error:", err.message);
+      // Graceful fallback with zeros
+      res.json({
+        period: "current_month",
+        pageViews: 0,
+        uniqueVisitors: 0,
+        byPageType: {},
+        topReferrers: [],
+        topUtmSources: [],
+        leads: 0,
+        photoQuotes: 0,
+        quotesSubmitted: 0,
+        jobsCompleted: 0,
+        revenue: 0,
+        conversionRate: 0
+      });
+    }
+  });
+
+  // ==========================================
   // GET /api/partners/:slug/roi
   // ROI & Comparative Analysis Dashboard
   // ==========================================
@@ -646,10 +803,18 @@ export function registerPartnerDashboardRoutes(app: Express) {
       ).catch(() => ({ rows: [{ count: 0 }] }));
       const seoPages = parseInt(seoResult.rows[0]?.count || "0");
 
-      // Estimated impressions = seo pages × 250 (conservative monthly estimate per page)
-      const impressions = seoPages * 250 + leads * 8 + photoQuotes * 3;
-      // Estimated clicks = ~12% of impressions
-      const clicks = Math.round(impressions * 0.12);
+      // Real impressions and clicks from partner_page_views tracking
+      const impressionsResult = await pool.query(
+        `SELECT
+          COUNT(*) as views,
+          COUNT(DISTINCT ip_hash) as unique_visitors
+         FROM partner_page_views
+         WHERE partner_slug = $1 AND created_at >= $2`,
+        [slug, monthStart]
+      ).catch(() => ({ rows: [{ views: 0, unique_visitors: 0 }] }));
+
+      const impressions = parseInt(impressionsResult.rows[0]?.views || "0");
+      const clicks = parseInt(impressionsResult.rows[0]?.unique_visitors || "0");
 
       // ─── Subscription Cost ───────────────────────────────────────
       const tierResult = await pool.query(

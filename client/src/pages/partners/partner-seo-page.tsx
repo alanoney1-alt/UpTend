@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -7,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Phone, MapPin, Star, MessageCircle } from "lucide-react";
 import { UpTendGuide } from "@/components/ai/uptend-guide";
+import { trackPageView } from "@/lib/page-tracker";
 
 interface SEOPageData {
   id: string;
@@ -26,6 +28,13 @@ interface SEOPageData {
 
 export default function PartnerSEOPage() {
   const { slug, neighborhood } = useParams<{ slug: string; neighborhood: string }>();
+
+  // Track page view for analytics
+  useEffect(() => {
+    if (slug) {
+      trackPageView(slug, 'seo_page');
+    }
+  }, [slug]);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["partner-seo-page", slug, neighborhood],

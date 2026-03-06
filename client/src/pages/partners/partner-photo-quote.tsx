@@ -12,7 +12,7 @@
  * 5. Alex calls customer with quote
  */
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useParams } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,6 +23,7 @@ import {
   Thermometer, Wrench, AlertCircle, Shield,
 } from "lucide-react";
 import { getPartnerConfig } from "@/config/partner-configs";
+import { trackPageView, getCurrentUTMParams } from "@/lib/page-tracker";
 
 interface PhotoPreview {
   file: File;
@@ -35,6 +36,11 @@ export default function PartnerPhotoQuote() {
   const params = useParams<{ slug: string }>();
   const slug = params.slug || "comfort-solutions-tech";
   const config = getPartnerConfig(slug);
+
+  // Track page view for analytics
+  useEffect(() => {
+    trackPageView(slug, 'photo_quote');
+  }, [slug]);
 
   const [step, setStep] = useState<Step>("form");
   const [photos, setPhotos] = useState<PhotoPreview[]>([]);
@@ -102,6 +108,17 @@ export default function PartnerPhotoQuote() {
       formData.append("customerPhone", form.customerPhone);
       formData.append("customerAddress", form.customerAddress);
       if (form.notes) formData.append("notes", form.notes);
+
+      // Capture UTM parameters for tracking
+      const utmParams = getCurrentUTMParams();
+      if (utmParams.source) formData.append("utmSource", utmParams.source);
+      if (utmParams.medium) formData.append("utmMedium", utmParams.medium);
+      if (utmParams.campaign) formData.append("utmCampaign", utmParams.campaign);
+      if (utmParams.content) formData.append("utmContent", utmParams.content);
+
+      // Also include referrer for attribution
+      const referrer = document.referrer;
+      if (referrer) formData.append("referrer", referrer);
       photos.forEach(({ file }) => formData.append("photos", file));
 
       const res = await fetch(`/api/partners/${slug}/photo-quote/submit`, {

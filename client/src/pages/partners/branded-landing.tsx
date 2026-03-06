@@ -11,7 +11,7 @@
  * - All leads route to the partner's dashboard
  */
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useParams } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ import {
 import { Logo } from "@/components/ui/logo";
 import { useLocalBusinessSchema, useFAQSchema, HVAC_FAQS, PARTNER_FAQS } from "@/components/structured-data";
 import { ServiceRequestForm } from "@/components/service-request-form";
+import { trackPageView } from "@/lib/page-tracker";
 
 interface PartnerConfig {
   slug: string;
@@ -160,6 +161,11 @@ export default function BrandedPartnerLanding() {
   const params = useParams();
   const slug = (params as any).slug || "demo-hvac";
   const config = PARTNER_CONFIGS[slug];
+
+  // Track page view for analytics
+  useEffect(() => {
+    trackPageView(slug, 'partner_profile');
+  }, [slug]);
 
   // Inject JSON-LD structured data for AI crawlers
   useLocalBusinessSchema({

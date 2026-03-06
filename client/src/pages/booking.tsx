@@ -11,6 +11,7 @@ import { NeighborhoodPriceContext } from "@/components/neighborhood-price-contex
 import { PaymentForm } from "@/components/payment-form";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import { trackPageView } from "@/lib/page-tracker";
 import {
   ShieldCheck,
   CheckCircle,
@@ -50,6 +51,12 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
 export default function BookingPage() {
   const { t } = useTranslation();
+
+  // Track page view for analytics (auto-detect if partner-related)
+  useEffect(() => {
+    trackPageView(); // Will auto-detect partner slug and page type from URL
+  }, []);
+
   useSEO({
     title: "Book a Service | UpTend",
     description: "Book trusted Orlando home services in minutes. Instant quotes for cleaning, lawn care, pressure washing, junk removal & more. Vetted pros, satisfaction guaranteed.",

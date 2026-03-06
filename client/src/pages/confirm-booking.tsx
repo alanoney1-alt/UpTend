@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Loader2, CreditCard, Shield, CheckCircle2, Lock, AlertCircle, MapPin, Calendar, Clock, FileText } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+import { trackPageView } from "@/lib/page-tracker";
 
 let stripePromise: Promise<any> | null = null;
 
@@ -168,6 +169,11 @@ export default function ConfirmBooking() {
   const [location, navigate] = useLocation();
   const { toast } = useToast();
   const [stripeInstance, setStripeInstance] = useState<any>(null);
+
+  // Track page view for analytics (auto-detect if partner-related)
+  useEffect(() => {
+    trackPageView(); // Will auto-detect partner slug and page type from URL
+  }, []);
   const [isSuccess, setIsSuccess] = useState(false);
 
   // Extract requestId from path and token from query

@@ -177,6 +177,7 @@ export default function ProDashboard() {
   const [jobs, setJobs] = useState<PartnerJob[]>([]);
   const [seoPages, setSeoPages] = useState<SEOPage[]>([]);
   const [stats, setStats] = useState({ totalLeads: 0, activeJobs: 0, revenue: 0, rating: 0 });
+  const [realAnalytics, setRealAnalytics] = useState<any>(null);
 
   // Quote modal
   const [quoteTarget, setQuoteTarget] = useState<PhotoQuote | null>(null);
@@ -192,18 +193,20 @@ export default function ProDashboard() {
   const fetchAll = async () => {
     setLoading(true);
     try {
-      const [pqRes, statsRes, leadsRes, seoRes, jobsRes] = await Promise.all([
+      const [pqRes, statsRes, leadsRes, seoRes, jobsRes, analyticsRes] = await Promise.all([
         fetch(`/api/partners/${slug}/photo-quote/list`).then((r) => r.json()).catch(() => ({ quotes: [] })),
         fetch(`/api/partners/${slug}/stats`).then((r) => r.json()).catch(() => ({ stats: {} })),
         fetch(`/api/partners/${slug}/leads`).then((r) => r.json()).catch(() => ({ leads: [] })),
         fetch(`/api/partners/${slug}/seo-pages`).then((r) => r.json()).catch(() => ({ pages: [] })),
         fetch(`/api/partners/${slug}/jobs`).then((r) => r.json()).catch(() => ({ jobs: [] })),
+        fetch(`/api/partners/${slug}/analytics/real`).then((r) => r.json()).catch(() => null),
       ]);
 
       setPhotoQuotes(pqRes.quotes || []);
       setLeads(leadsRes.leads || []);
       setSeoPages(seoRes.pages || []);
       setJobs(jobsRes.jobs || []);
+      setRealAnalytics(analyticsRes);
 
       const s = statsRes.stats || {};
       const totalPQ = (pqRes.quotes || []).length;
@@ -549,6 +552,49 @@ export default function ProDashboard() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Real Analytics */}
+            {realAnalytics && (
+              <Card className="border-border/60">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">Real Analytics (This Month)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Page Views</span>
+                      <div className="font-semibold text-lg">{realAnalytics.pageViews.toLocaleString()}</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Unique Visitors</span>
+                      <div className="font-semibold text-lg">{realAnalytics.uniqueVisitors.toLocaleString()}</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Leads</span>
+                      <div className="font-semibold text-lg">{realAnalytics.leads}</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Conversion Rate</span>
+                      <div className="font-semibold text-lg">{realAnalytics.conversionRate}%</div>
+                    </div>
+                  </div>
+
+                  {realAnalytics.topReferrers?.length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-border/60">
+                      <div className="text-sm font-medium mb-2">Top Traffic Sources</div>
+                      <div className="space-y-1">
+                        {realAnalytics.topReferrers.slice(0, 3).map((ref: any, i: number) => (
+                          <div key={i} className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">{ref.referrer}</span>
+                            <span className="font-medium">{ref.count}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
 
             {/* SEO Pages */}
             {seoPages.length > 0 && (

@@ -160,12 +160,18 @@ export function registerPartnerPhotoQuoteRoutes(app: Express) {
         // Run AI analysis — include customer's problem description for better diagnosis
         const aiAnalysis = await analyzeHvacPhotos(photoUrls, parsed.notes);
 
+        // Extract UTM parameters for tracking
+        const utmSource = req.body.utmSource || null;
+        const utmMedium = req.body.utmMedium || null;
+        const utmCampaign = req.body.utmCampaign || null;
+        const referrer = req.body.referrer || null;
+
         // Persist to DB
         const result = await pool.query(
           `INSERT INTO partner_photo_quotes
              (partner_slug, customer_name, customer_email, customer_phone, customer_address,
-              photo_urls, ai_analysis, status, notes)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, 'pending', $8)
+              photo_urls, ai_analysis, status, notes, utm_source, utm_medium, utm_campaign, referrer)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, 'pending', $8, $9, $10, $11, $12)
            RETURNING id, created_at`,
           [
             slug,
@@ -176,6 +182,10 @@ export function registerPartnerPhotoQuoteRoutes(app: Express) {
             photoUrls,
             JSON.stringify(aiAnalysis),
             parsed.notes || null,
+            utmSource,
+            utmMedium,
+            utmCampaign,
+            referrer,
           ]
         );
 

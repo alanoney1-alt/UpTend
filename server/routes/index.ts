@@ -334,6 +334,9 @@ import { registerWebSocketHandlers } from "./websocket/handlers";
 import { registerHealthRoutes } from "./api-health.routes";
 import { registerAIDiscoveryRoutes } from "./ai-discovery.routes";
 
+// Analytics tracking
+import { registerTrackingRoutes } from "./tracking.routes";
+
 /**
  * Main routes registration function
  * Sets up authentication, middleware, and all feature routes
@@ -348,6 +351,9 @@ export async function registerRoutes(
 
   // Register object storage routes
   registerObjectStorageRoutes(app);
+
+  // Register analytics tracking routes (public, no auth required)
+  registerTrackingRoutes(app);
 
   // Register audit middleware
   app.use(auditMiddleware);
