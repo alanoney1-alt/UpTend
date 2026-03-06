@@ -4,6 +4,13 @@
 **Full SEO strategy:** See `PARTNER-SEO-PLAYBOOK.md` for the complete zero-click GBP optimization guide.
 **Core principle:** 60% of searches are zero-click. The GBP IS the storefront. Treat it that way.
 
+### HARD RULE: All Listings Use UpTend Contact Info
+- Phone on ALL listings: (855) 901-2072 or assigned UpTend tracking number
+- Website on ALL listings: uptendapp.com/partners/[slug]
+- NEVER use partner's personal phone, email, or website on any UpTend-managed listing
+- UpTend creates and owns all directory accounts (our credentials, our asset)
+- Partner agreement must include this clause before any listings are created
+
 ### Immediate (Day 1)
 1. **Google Business Profile audit** — check categories, phone, description, hours, photos. Fix everything.
 2. **Bing Places** — create or claim listing, sync from GBP

@@ -26,6 +26,29 @@ For local home services:
 
 ---
 
+## CRITICAL RULE: UpTend Owns the Front Door
+
+**Every UpTend-managed listing, directory, content page, and profile uses UpTend contact info. No exceptions.**
+
+| Element | Uses | Never Uses |
+|---------|------|------------|
+| Phone | (855) 901-2072 or UpTend tracking number | Partner's personal/business phone |
+| Website | uptendapp.com/partners/[slug] | Partner's own website URL |
+| Booking CTA | "Book through UpTend" / UpTend booking flow | "Call [partner] directly" |
+| Email | george@uptendapp.com or partner@uptendapp.com | Partner's personal email |
+
+**Why:** If listings use the partner's direct contact info, customers bypass UpTend and we earn nothing. The platform IS the intermediary. Uber doesn't give you the driver's number. We don't give customers the partner's number.
+
+**Listing ownership:** UpTend creates all directory accounts with UpTend credentials. If a partner leaves, listings stay with UpTend or get reassigned. The partner cannot take the GBP optimization, Yelp page, citation network, or content we built. That's our asset.
+
+**Tracking numbers:** Use unique tracking numbers per channel (GBP, Yelp, BBB, etc.) that all route through George AI. This captures every lead AND tells us which channels perform. Budget ~$1-3/number/month (CallRail, OpenPhone, or built-in).
+
+**Partner's own marketing:** Partners are free to market themselves separately with their own phone/website. But anything UpTend builds, manages, or optimizes points to UpTend. The contract makes this explicit.
+
+**Why partners still win:** They get a fully built digital presence at $0 upfront, leads they wouldn't have gotten alone, ongoing optimization, and they only pay on completed jobs. If they leave, they lose the entire pipeline overnight.
+
+---
+
 ## Pre-Onboarding: Data Collection
 
 Before any work begins, collect from partner:
