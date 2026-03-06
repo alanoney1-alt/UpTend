@@ -435,11 +435,12 @@ export default function ProDashboard() {
                             <p className="text-sm text-muted-foreground">{gl.description}</p>
                           )}
 
-                          {/* Notes */}
+                          {/* Customer's problem description */}
                           {'notes' in lead && lead.notes && (
-                            <p className="text-xs text-muted-foreground bg-muted/50 rounded px-2 py-1.5">
+                            <div className="text-sm bg-muted/40 rounded-md px-3 py-2 border-l-2 border-primary/30">
+                              <span className="text-xs font-medium text-muted-foreground block mb-0.5">Customer says:</span>
                               {lead.notes}
-                            </p>
+                            </div>
                           )}
 
                           {/* Action */}

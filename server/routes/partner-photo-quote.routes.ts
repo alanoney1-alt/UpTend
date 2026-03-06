@@ -49,8 +49,12 @@ async function resolvePhotoUrls(files: Express.Multer.File[]): Promise<string[]>
   );
 }
 
-async function analyzeHvacPhotos(photoUrls: string[]): Promise<any> {
-  const prompt = `You are an expert HVAC technician reviewing customer-submitted photos of their HVAC system.
+async function analyzeHvacPhotos(photoUrls: string[], customerNotes?: string): Promise<any> {
+  const notesContext = customerNotes
+    ? `\n\nThe customer described their problem as: "${customerNotes}"\nFactor this into your assessment — it may reveal issues not visible in the photos.\n`
+    : '';
+
+  const prompt = `You are an expert HVAC technician reviewing customer-submitted photos of their HVAC system.${notesContext}
 
 Analyze ALL photos carefully and return a detailed JSON assessment:
 {
@@ -153,8 +157,8 @@ export function registerPartnerPhotoQuoteRoutes(app: Express) {
 
         const photoUrls = await resolvePhotoUrls(files);
 
-        // Run AI analysis
-        const aiAnalysis = await analyzeHvacPhotos(photoUrls);
+        // Run AI analysis — include customer's problem description for better diagnosis
+        const aiAnalysis = await analyzeHvacPhotos(photoUrls, parsed.notes);
 
         // Persist to DB
         const result = await pool.query(
