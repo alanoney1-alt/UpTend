@@ -28,6 +28,30 @@
 17. **Review monitoring** — track new reviews, respond if needed
 18. **Content creation** — write service-area pages featuring partner
 
+### Partner Engagement Emails (Non-Negotiable)
+
+**Weekly Partner Report Email** — sent every Monday to each active partner showing:
+- **What we did this week:** directory updates, content created, GBP edits, schema changes
+- **Competitive analysis:** how they stack up against local competitors in search
+- **Keyword rankings:** which search terms they're appearing for, movement up/down
+- **New content:** blog posts, FAQ pages, or answer-engine content published featuring them
+- **Review activity:** new reviews received, responses posted, review count progress
+- **AI visibility:** any new mentions in ChatGPT, Perplexity, Gemini, or Google AI Overviews
+- **Next steps:** what's planned for the coming week
+
+**Monthly Partner Summary** — sent first of each month:
+- Full month recap of all SEO and visibility work performed
+- Before/after metrics: GBP impressions, website clicks, phone calls, direction requests
+- Share of Model scores across AI platforms (10 test queries, 4 platforms)
+- Review milestone progress (tracking toward 10, 25, 50 review targets)
+- Content performance: which pages are getting traffic, which keywords are ranking
+- Competitor movement: who gained, who lost, where the partner stands
+- Recommendations for next month
+
+**Why this matters:** Partners who see regular proof of value stay engaged, refer other pros, and don't churn. This email IS the retention mechanism. It shows them UpTend isn't just routing leads — it's actively building their digital presence every single week. No other platform does this.
+
+**Template:** Cap'n generates these automatically from the SEO tracking data, GBP insights, and AI visibility test results. Partner just opens their inbox and sees the value.
+
 ---
 
 ## UpTend Platform Checklist (Ongoing)
