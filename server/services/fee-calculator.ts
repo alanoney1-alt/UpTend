@@ -1,9 +1,18 @@
 /**
  * Fee Calculator Service
  * 
- * Gamified fee reduction based on pro certifications.
- * Flat 15% platform fee for all pros.
- * Pro keeps 85% of every job.
+ * TWO fee models:
+ * 
+ * 1. UNLICENSED SERVICES (junk removal, cleaning, pressure washing, handyman, etc.)
+ *    - Flat 15% from pro + 5% from customer = 20% total
+ *    - No negotiation, same for everyone
+ * 
+ * 2. LICENSED TRADES (HVAC, plumbing, electrical, roofing, etc.)
+ *    - Custom % of total job, negotiated per partner (stored in hauler_profiles.custom_fee_rate)
+ *    - + 5% from customer
+ *    - Example: 10% partner rate on $500 job = $50 to UpTend + $25 from customer = $75 total
+ * 
+ * All fees are % of TOTAL JOB PRICE, not out of profit.
  */
 
 import { db } from "../db";
@@ -11,7 +20,42 @@ import { eq, and, sql } from "drizzle-orm";
 import { haulerProfiles, proCertifications, serviceRequests } from "@shared/schema";
 import { getActiveDiscount } from "./invite-code.service.js";
 
-// ── Tier Definitions ──
+// ── Service Classification ──
+
+// Licensed trades = custom negotiated % per partner
+// Unlicensed services = flat 15% always
+export const LICENSED_TRADES = new Set([
+  'hvac',
+  'plumbing',
+  'electrical',
+  'roofing',
+  'general_contracting',
+]);
+
+export const UNLICENSED_SERVICES = new Set([
+  'junk_removal',
+  'home_cleaning',
+  'pressure_washing',
+  'gutter_cleaning',
+  'pool_cleaning',
+  'handyman',
+  'moving_labor',
+  'carpet_cleaning',
+  'light_demolition',
+  'landscaping',
+  'painting',
+  'garage_cleanout',
+]);
+
+export function isLicensedTrade(serviceType: string): boolean {
+  return LICENSED_TRADES.has(serviceType);
+}
+
+// Flat rate for all unlicensed work — no negotiation
+export const UNLICENSED_FEE_RATE = 0.15; // 15% from pro
+export const CUSTOMER_FEE_RATE = 0.05;   // 5% from customer (always, both models)
+
+// ── Tier Definitions (legacy, kept for unlicensed services) ──
 
 export interface FeeTier {
   name: string;
@@ -118,11 +162,13 @@ export async function calculatePlatformFee(proId: string): Promise<FeeStatus> {
   `);
   const activeCertCount = Number((activeCertsResult.rows[0] as any)?.count || 0);
 
-  // Per-partner custom rate takes priority over tier-based calculation
-  // This allows negotiated commission rates for each licensed partner
+  // Fee model depends on service type:
+  // - Licensed trades: use partner's custom negotiated rate (custom_fee_rate)
+  // - Unlicensed services: always flat 15%, no exceptions
+  // The customFeeRate field is ONLY used for licensed trade partners
   const baseFeeRate = profile?.customFeeRate != null
     ? profile.customFeeRate
-    : getFeeRate(isLlc, activeCertCount);
+    : UNLICENSED_FEE_RATE; // Default 15% for everyone without a custom rate
 
   // Apply invite code discount if active (lookup by hauler profile id)
   const inviteDiscount = haulerProfileId

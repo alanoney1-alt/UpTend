@@ -2,7 +2,7 @@ import { getUncachableStripeClient, getStripePublishableKey } from './stripeClie
 import { storage } from './storage';
 import { logError } from './utils/logger';
 
-import { getFeePercent } from './services/fee-calculator';
+import { getFeePercent, isLicensedTrade, UNLICENSED_FEE_RATE, CUSTOMER_FEE_RATE } from './services/fee-calculator';
 import { calculateFees as calculateFeesV2, type FeeBreakdown } from './services/fee-calculator-v2';
 
 // V2 fee model: 5% customer fee + 15% pro fee
@@ -25,14 +25,29 @@ export interface PayoutBreakdown {
 }
 
 export class StripeService {
-  getPlatformFeePercent(_pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, activeCertCount: number = 0, customFeeRate?: number | null): number {
-    // Per-partner negotiated rate takes priority
+  /**
+   * Get the platform fee percent for a job.
+   * 
+   * Unlicensed services: ALWAYS 15%. No exceptions. No negotiation.
+   * Licensed trades: use partner's custom negotiated rate (customFeeRate).
+   * Falls back to 15% if no custom rate set.
+   * 
+   * This is % of TOTAL JOB PRICE taken from the pro side.
+   * Customer always pays an additional 5% on top.
+   */
+  getPlatformFeePercent(_pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, activeCertCount: number = 0, customFeeRate?: number | null, serviceType?: string): number {
+    // Unlicensed work = flat 15%, always
+    if (serviceType && !isLicensedTrade(serviceType)) {
+      return Math.round(UNLICENSED_FEE_RATE * 100);
+    }
+    // Licensed trade with negotiated rate
     if (customFeeRate != null) return Math.round(customFeeRate * 100);
+    // Default
     return getFeePercent(isVerifiedLlc, activeCertCount);
   }
 
-  getHaulerPayoutPercent(_pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, activeCertCount: number = 0, customFeeRate?: number | null): number {
-    return 100 - this.getPlatformFeePercent(_pyckerTier, isVerifiedLlc, activeCertCount, customFeeRate);
+  getHaulerPayoutPercent(_pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, activeCertCount: number = 0, customFeeRate?: number | null, serviceType?: string): number {
+    return 100 - this.getPlatformFeePercent(_pyckerTier, isVerifiedLlc, activeCertCount, customFeeRate, serviceType);
   }
 
   // Recurring/subscription services exempt from $50 minimum payout floor
