@@ -152,7 +152,8 @@ export function serveStatic(app: Express) {
   // Serve uploaded job photos
   app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
-  app.use(express.static(distPath));
+  // Serve static files but skip index.html (handled by catch-all with crawler content injection)
+  app.use(express.static(distPath, { index: false }));
 
   // fall through to index.html if the file doesn't exist
   // For business landing page, inject different OG meta tags
