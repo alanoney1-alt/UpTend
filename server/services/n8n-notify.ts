@@ -74,6 +74,45 @@ export function notifyNewServiceRequest(payload: ServiceRequestPayload): void {
 }
 
 /**
+ * Notify n8n when a job is completed and paid — triggers review solicitation
+ */
+export function notifyJobCompleted(payload: {
+  customerName: string;
+  customerEmail: string;
+  serviceType: string;
+  partnerName: string;
+  partnerSlug: string;
+  jobId: string;
+}): void {
+  fireWebhook('/webhook/job-completed', payload);
+}
+
+/**
+ * Notify n8n to start lead nurture drip for customers who didn't book
+ */
+export function notifyLeadNurture(payload: {
+  customerName: string;
+  customerEmail: string;
+  serviceType: string;
+  area: string;
+}): void {
+  fireWebhook('/webhook/lead-nurture', payload);
+}
+
+/**
+ * Notify n8n when a new partner signs up — triggers onboarding drip
+ */
+export function notifyPartnerOnboard(payload: {
+  partnerName: string;
+  partnerEmail: string;
+  ownerName: string;
+  slug: string;
+  serviceType: string;
+}): void {
+  fireWebhook('/webhook/partner-onboard', payload);
+}
+
+/**
  * Generic webhook fire for future workflows
  */
 export function notifyN8n(webhookPath: string, data: Record<string, any>): void {
