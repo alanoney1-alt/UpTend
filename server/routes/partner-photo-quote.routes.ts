@@ -200,7 +200,7 @@ export function registerPartnerPhotoQuoteRoutes(app: Express) {
            VALUES (gen_random_uuid(), $1, 'pending_estimate', $2, $3, $4, $5, $6, $7, $8, NOW())
            RETURNING id`,
           [
-            'hvac', // Default for Comfort Solutions — future: read from partner config
+            slug === 'a2-nona-junk-removal' ? 'junk_removal' : 'hvac', // Service type by partner
             parsed.customerName,
             parsed.customerEmail,
             parsed.customerPhone,
@@ -223,7 +223,11 @@ export function registerPartnerPhotoQuoteRoutes(app: Express) {
         }
 
         // Notify the partner via email using existing email service
-        const partnerEmail = slug === 'comfort-solutions-tech' ? 'alan@uptendapp.com' : process.env.ADMIN_EMAIL;
+        const partnerEmails: Record<string, string> = {
+          'comfort-solutions-tech': 'alan@uptendapp.com',
+          'a2-nona-junk-removal': 'alan@a2nonajunkremoval.com',
+        };
+        const partnerEmail = partnerEmails[slug] || process.env.ADMIN_EMAIL;
         if (partnerEmail && serviceRequestResult?.rows[0]?.id) {
           sendProNewJob(partnerEmail, {
             id: serviceRequestResult.rows[0].id,

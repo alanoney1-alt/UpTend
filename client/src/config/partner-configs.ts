@@ -21,6 +21,14 @@ export const PARTNER_CONFIGS: Record<string, PartnerConfig> = {
     accentColor: "#2563EB",
     serviceType: "HVAC",
   },
+  "a2-nona-junk-removal": {
+    companyName: "A² Nona Junk Removal",
+    tagline: "Lake Nona's Junk Removal Pros",
+    phone: "(855) 901-2072",
+    ownerName: "Alan",
+    accentColor: "#16A34A",
+    serviceType: "Junk Removal",
+  },
   "demo-hvac": {
     companyName: "Orlando Air Pro",
     tagline: "Orlando's Trusted HVAC Experts",
