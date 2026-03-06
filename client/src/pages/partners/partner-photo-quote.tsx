@@ -22,42 +22,7 @@ import {
   Camera, CheckCircle, Loader2, Phone, Upload, X, ArrowRight,
   Thermometer, Wrench, AlertCircle, Shield,
 } from "lucide-react";
-
-// Partner config — mirrors PARTNER_CONFIGS in branded-landing.tsx
-const PARTNER_CONFIGS: Record<string, {
-  companyName: string;
-  tagline: string;
-  phone: string;
-  ownerName: string;
-  accentColor: string;
-  serviceType: string;
-}> = {
-  "comfort-solutions-tech": {
-    companyName: "Comfort Solutions Tech LLC",
-    tagline: "Your Comfort, Our Mission",
-    phone: "(855) 901-2072",
-    ownerName: "Alex",
-    accentColor: "#2563EB",
-    serviceType: "HVAC",
-  },
-  "demo-hvac": {
-    companyName: "Orlando Air Pro",
-    tagline: "Orlando's Trusted HVAC Experts",
-    phone: "(855) 901-2072",
-    ownerName: "Team",
-    accentColor: "#2563EB",
-    serviceType: "HVAC",
-  },
-};
-
-const DEFAULT_CONFIG = {
-  companyName: "Comfort Solutions Tech LLC",
-  tagline: "Your Comfort, Our Mission",
-  phone: "(855) 901-2072",
-  ownerName: "Alex",
-  accentColor: "#2563EB",
-  serviceType: "HVAC",
-};
+import { getPartnerConfig } from "@/config/partner-configs";
 
 interface PhotoPreview {
   file: File;
@@ -69,7 +34,7 @@ type Step = "form" | "uploading" | "success" | "error";
 export default function PartnerPhotoQuote() {
   const params = useParams<{ slug: string }>();
   const slug = params.slug || "comfort-solutions-tech";
-  const config = PARTNER_CONFIGS[slug] ?? DEFAULT_CONFIG;
+  const config = getPartnerConfig(slug);
 
   const [step, setStep] = useState<Step>("form");
   const [photos, setPhotos] = useState<PhotoPreview[]>([]);

@@ -126,6 +126,7 @@ const PartnerReviews = lazy(() => import("@/pages/partners/partner-reviews"));
 const PartnerSEOPage = lazy(() => import("@/pages/partners/partner-seo-page"));
 const PartnerNeighborhoodSEO = lazy(() => import("@/pages/partners/partner-neighborhood-seo"));
 const PartnerPhotoQuote = lazy(() => import("@/pages/partners/partner-photo-quote"));
+const ProDashboardPage = lazy(() => import("@/pages/partners/pro-dashboard"));
 const InvoicePayPage = lazy(() => import("@/pages/pay/invoice").then(m => ({ default: m.InvoicePayPage })));
 const InvoicePaySuccessPage = lazy(() => import("@/pages/pay/invoice").then(m => ({ default: m.InvoicePaySuccessPage })));
 const CustomerJobTrack = lazy(() => import("@/pages/customer-job-track"));
@@ -326,6 +327,7 @@ function Router() {
       <Route path="/pro/earnings" component={EarningsPage} />
       <Route path="/pro/rates" component={HaulerDashboard} />
       <Route path="/pro/background-check" component={ProBackgroundCheck} />
+      <Route path="/pro/:slug" component={ProDashboardPage} />
       <Route path="/career-dashboard" component={CareerDashboard} />
       {/* Legacy hauler routes for backward compatibility */}
       <Route path="/hauler/dashboard" component={HaulerDashboard} />

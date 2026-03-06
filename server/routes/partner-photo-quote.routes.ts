@@ -17,6 +17,7 @@ import { pool } from "../db";
 import { analyzeImages } from "../services/ai/openai-vision-client";
 import { getMulterStorage, isCloudStorage, uploadFile } from "../services/file-storage";
 import { sendProNewJob } from "../services/email-service";
+import { nanoid } from "nanoid";
 
 const photoUpload = multer({
   storage: getMulterStorage("partner-photo-quotes"),
@@ -285,6 +286,114 @@ export function registerPartnerPhotoQuoteRoutes(app: Express) {
       res.json({ success: true });
     } catch (err: any) {
       res.status(500).json({ error: err.message });
+    }
+  });
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PATCH /api/partners/:slug/photo-quote/:id/quote  (quote submission)
+  // ═══════════════════════════════════════════════════════════════════
+  router.patch("/:slug/photo-quote/:id/quote", async (req, res) => {
+    try {
+      const { slug, id } = req.params;
+      const { quotedPrice, quoteNotes, estimatedDuration, scheduledDate } = req.body;
+
+      // Validate required fields
+      if (!quotedPrice || !quoteNotes) {
+        return res.status(400).json({ error: "quotedPrice and quoteNotes are required" });
+      }
+
+      // Get the photo quote record
+      const photoQuoteResult = await pool.query(
+        `SELECT * FROM partner_photo_quotes WHERE id = $1 AND partner_slug = $2`,
+        [id, slug]
+      );
+
+      if (photoQuoteResult.rows.length === 0) {
+        return res.status(404).json({ error: "Photo quote not found" });
+      }
+
+      const photoQuote = photoQuoteResult.rows[0];
+
+      // Check if service request already exists
+      let serviceRequestId = photoQuote.service_request_id;
+
+      if (!serviceRequestId) {
+        // Create new service request
+        const serviceRequestResult = await pool.query(
+          `INSERT INTO service_requests
+             (id, service_type, status, customer_name, customer_email, customer_phone,
+              address, description, photo_urls, partner_slug, created_at)
+           VALUES (gen_random_uuid(), $1, 'pending_estimate', $2, $3, $4, $5, $6, $7, $8, NOW())
+           RETURNING id`,
+          [
+            'hvac', // Default service type
+            photoQuote.customer_name,
+            photoQuote.customer_email,
+            photoQuote.customer_phone,
+            photoQuote.customer_address,
+            `Photo Quote Request: ${photoQuote.ai_analysis?.technician_notes || 'Customer submitted photos for review.'}${photoQuote.notes ? '\n\nCustomer notes: ' + photoQuote.notes : ''}`,
+            photoQuote.photo_urls,
+            slug,
+          ]
+        );
+
+        serviceRequestId = serviceRequestResult.rows[0].id;
+
+        // Link the photo quote to the service request
+        await pool.query(
+          `UPDATE partner_photo_quotes SET service_request_id = $1 WHERE id = $2`,
+          [serviceRequestId, id]
+        );
+      }
+
+      // Generate confirmation token
+      const confirmToken = nanoid(32);
+
+      // Update service request with quote details using existing API pattern
+      await pool.query(
+        `UPDATE service_requests SET
+           quoted_price = $1,
+           quote_notes = $2,
+           estimated_duration = $3,
+           scheduled_for = $4,
+           confirm_token = $5,
+           status = 'quoted',
+           updated_at = NOW()
+         WHERE id = $6`,
+        [quotedPrice, quoteNotes, estimatedDuration, scheduledDate, confirmToken, serviceRequestId]
+      );
+
+      // Update photo quote status
+      await pool.query(
+        `UPDATE partner_photo_quotes SET status = 'quoted', updated_at = NOW() WHERE id = $1`,
+        [id]
+      );
+
+      // Send customer email with quote
+      try {
+        const { sendQuoteReady } = await import("../services/email-service");
+        await sendQuoteReady(photoQuote.customer_email, {
+          customerName: photoQuote.customer_name,
+          partnerName: slug === 'comfort-solutions-tech' ? 'Comfort Solutions Tech LLC' : 'Orlando Air Pro',
+          quotedPrice,
+          quoteNotes,
+          estimatedDuration,
+          confirmUrl: `${process.env.CLIENT_URL || 'http://localhost:5173'}/confirm/${serviceRequestId}?token=${confirmToken}`,
+        });
+      } catch (emailErr: any) {
+        console.error("[Partner Photo Quote] Email send failed:", emailErr.message);
+        // Don't fail the quote submission if email fails
+      }
+
+      res.json({
+        success: true,
+        serviceRequestId,
+        message: "Quote submitted successfully. Customer will receive email with quote details.",
+      });
+
+    } catch (err: any) {
+      console.error("[Partner Photo Quote] Quote submission error:", err.message);
+      res.status(500).json({ error: "Failed to submit quote" });
     }
   });
 
