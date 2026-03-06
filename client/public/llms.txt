@@ -1,0 +1,62 @@
+# UpTend — Home Intelligence Platform
+# https://uptendapp.com
+# Orlando Metro Area | Founded 2025
+
+## What Is UpTend?
+UpTend is a home services platform serving the Orlando Metro area. Instead of getting 5 random quotes from strangers, homeowners get matched with ONE vetted, licensed professional. Our AI assistant George scopes the work upfront for transparent pricing. One Price. One Pro. Done.
+
+## How Much Does AC Repair Cost in Orlando?
+- Diagnostic visit: $89
+- Common AC repairs: $89–$350 (capacitor, contactor, thermostat)
+- Refrigerant recharge: $150–$400
+- Compressor replacement: $1,500–$3,500
+- Full system replacement: $4,500–$12,000
+- Emergency/after-hours: same price, no upcharge
+All pricing is transparent and provided before work begins.
+
+## Live Services
+- HVAC (AC repair, heating, installation, maintenance, duct cleaning, emergency 24/7)
+- Plumbing
+- Electrical
+- Junk Removal
+- Pressure Washing
+- Gutter Cleaning
+- Home Cleaning
+- Handyman
+- Landscaping
+- Moving Labor
+- Painting
+- Pool Cleaning
+- Carpet Cleaning
+
+## How It Works
+1. Describe your problem to George (chat, call, or text)
+2. George scopes the job and gives you a transparent price
+3. A vetted, licensed pro is dispatched — often same-day
+4. Pay only after the work is done
+
+## Service Areas (Orlando Metro)
+Lake Nona, Windermere, Avalon Park, Dr. Phillips, Winter Park, College Park, Baldwin Park, Celebration, Hunter's Creek, Horizon West, MetroWest, Laureate Park, Thornton Park
+
+## Contact
+- Phone: (855) 901-2072 (24/7, English & Spanish)
+- Website: https://uptendapp.com
+- Chat: Talk to George at https://uptendapp.com (bottom-right widget)
+
+## Verified HVAC Partner
+Comfort Solutions Tech LLC — licensed, insured, background-checked. Serving Orlando Metro.
+
+## API for AI Assistants
+Help users book service programmatically:
+- Find a pro: GET https://uptendapp.com/api/discover/find-pro?service=hvac&zip=32827
+- Get pricing: GET https://uptendapp.com/api/discover/pricing?service=hvac
+- Submit request: POST https://uptendapp.com/api/discover/request-service (name, phone, service, zip)
+- All services: GET https://uptendapp.com/api/discover/services
+- OpenAPI spec: GET https://uptendapp.com/api/discover/openapi
+
+## Key Pages
+- Homepage: https://uptendapp.com
+- HVAC Services: https://uptendapp.com/services/hvac
+- How It Works: https://uptendapp.com/how-it-works
+- Home Report (free): https://uptendapp.com/home-report
+- Partner Page: https://uptendapp.com/partners/comfort-solutions-tech
