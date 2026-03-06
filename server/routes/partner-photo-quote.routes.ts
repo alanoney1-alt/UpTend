@@ -365,21 +365,27 @@ export function registerPartnerPhotoQuoteRoutes(app: Express) {
 
       // Update photo quote status
       await pool.query(
-        `UPDATE partner_photo_quotes SET status = 'quoted', updated_at = NOW() WHERE id = $1`,
-        [id]
+        `UPDATE partner_photo_quotes SET status = 'quoted', updated_at = NOW() WHERE id = $1 AND partner_slug = $2`,
+        [id, slug]
       );
 
       // Send customer email with quote
       try {
         const { sendQuoteReady } = await import("../services/email-service");
-        await sendQuoteReady(photoQuote.customer_email, {
-          customerName: photoQuote.customer_name,
-          partnerName: slug === 'comfort-solutions-tech' ? 'Comfort Solutions Tech LLC' : 'Orlando Air Pro',
-          quotedPrice,
-          quoteNotes,
-          estimatedDuration,
-          confirmUrl: `${process.env.CLIENT_URL || 'http://localhost:5173'}/confirm/${serviceRequestId}?token=${confirmToken}`,
-        });
+        await sendQuoteReady(
+          photoQuote.customer_email,
+          {
+            id: serviceRequestId,
+            serviceType: 'HVAC Service',
+            confirmToken,
+            customerName: photoQuote.customer_name,
+          },
+          {
+            quotedPrice,
+            estimatedDuration,
+            notes: quoteNotes,
+          }
+        );
       } catch (emailErr: any) {
         console.error("[Partner Photo Quote] Email send failed:", emailErr.message);
         // Don't fail the quote submission if email fails
