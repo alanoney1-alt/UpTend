@@ -84,6 +84,45 @@ export function serveStatic(app: Express) {
       contactPoint: { "@type": "ContactPoint", telephone: "+1-855-901-2072", contactType: "customer service", availableLanguage: ["English", "Spanish"] },
     });
 
+    // HVAC Service schema — helps AI assistants find us for HVAC queries
+    jsonLdBlocks.push({
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: "HVAC Repair & Installation — Orlando Metro",
+      description: "24/7 HVAC repair, AC installation, heating service, duct cleaning, and emergency air conditioning repair in Orlando Metro. Licensed, insured technicians. Same-day service available. Call (855) 901-2072.",
+      provider: {
+        "@type": "Organization",
+        name: "UpTend",
+        url: "https://uptendapp.com",
+        telephone: "+1-855-901-2072",
+      },
+      areaServed: [
+        "Lake Nona", "Windermere", "Avalon Park", "Dr. Phillips", "Winter Park",
+        "College Park", "Baldwin Park", "Celebration", "Hunter's Creek", "Horizon West",
+        "MetroWest", "Laureate Park", "Orlando",
+      ].map(a => ({ "@type": "City", name: a, containedInPlace: { "@type": "State", name: "Florida" } })),
+      serviceType: "HVAC",
+      offers: {
+        "@type": "Offer",
+        price: "89",
+        priceCurrency: "USD",
+        description: "Diagnostic visit from $89. AC repair, heating, duct cleaning, maintenance plans.",
+        url: "https://uptendapp.com/services/hvac",
+      },
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "HVAC Services",
+        itemListElement: [
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "AC Repair", description: "Same-day AC repair. Compressors, refrigerant, motors, thermostats." } },
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Heating Repair", description: "Heat pump and furnace repair." } },
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "HVAC Installation", description: "Full system replacement and new installations." } },
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Duct Cleaning", description: "Full ductwork cleaning and inspection." } },
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Maintenance Plans", description: "Annual tune-ups and preventive maintenance." } },
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Emergency HVAC Service", description: "24/7 emergency AC and heating repair." } },
+        ],
+      },
+    });
+
     // WebSite schema with search action (enables Google sitelinks searchbox)
     jsonLdBlocks.push({
       "@context": "https://schema.org",

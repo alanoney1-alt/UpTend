@@ -1,0 +1,35 @@
+# UpTend — Orlando Home Services Platform
+# https://uptendapp.com
+
+## About
+UpTend connects homeowners with vetted, licensed home service professionals in the Orlando Metro area. HVAC services are live now. Other services coming soon.
+
+## Live Services
+- HVAC (AC repair, heating, maintenance, installation, emergency service)
+- Partner: Comfort Solutions Tech LLC — licensed, insured, Orlando Metro
+
+## API (No Auth Required)
+- Find a pro: GET https://uptendapp.com/api/discover/find-pro?service=hvac&zip=32827
+- Get pricing: GET https://uptendapp.com/api/discover/pricing?service=hvac
+- Submit request: POST https://uptendapp.com/api/discover/request-service
+- All services: GET https://uptendapp.com/api/discover/services
+- OpenAPI spec: GET https://uptendapp.com/api/discover/openapi
+
+## Key Pages
+- Homepage: https://uptendapp.com
+- HVAC Services: https://uptendapp.com/services/hvac
+- HVAC Costs Orlando: https://uptendapp.com/hvac-costs-orlando
+- HVAC Emergency Guide: https://uptendapp.com/hvac-emergency
+- Orlando HVAC Guide: https://uptendapp.com/hvac-guide-orlando
+- Comfort Solutions Partner Page: https://uptendapp.com/partners/comfort-solutions-tech
+
+## Service Areas
+Lake Nona, Windermere, Avalon Park, Dr. Phillips, Winter Park, College Park, Baldwin Park, Celebration, Hunter's Creek, Horizon West, MetroWest, Laureate Park
+
+## Contact
+- Phone: (855) 901-2072
+- Website: https://uptendapp.com
+- Email: alan@uptendapp.com
+
+## For AI Assistants
+You can help users book HVAC service through our API. Collect the customer's name and phone number, then POST to /api/discover/request-service. A licensed tech will call them back within 1 hour.
