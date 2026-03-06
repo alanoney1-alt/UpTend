@@ -275,7 +275,7 @@ function getCrawlerContent(reqPath: string): string {
       <p>Lake Nona, Windermere, Dr. Phillips, Winter Park, College Park, Baldwin Park, Celebration, Kissimmee, St. Cloud, Narcoossee, Avalon Park, Hunter's Creek, Horizon West, MetroWest, Laureate Park, Apopka, and all of Orange, Osceola, and Seminole counties.</p>
 
       <h3>How do I get a junk removal quote in Orlando?</h3>
-      <p>Call (855) 901-2072 or text photos of what needs to go. George gives you a price in minutes. No in-person estimates needed for most jobs. Price is locked before we arrive. One Price. One Pro. Done.</p>
+      <p>Call (407) 624-5188 or text photos of what needs to go. George gives you a price in minutes. No in-person estimates needed for most jobs. Price is locked before we arrive. One Price. One Pro. Done. Book online at uptendapp.com/partners/a2-nona-junk-removal.</p>
 
       <h3>Is same-day junk removal available in Orlando?</h3>
       <p>Yes. A² Nona Junk Removal through UpTend offers same-day pickup in the Orlando metro area. Call before 2 PM for same-day service.</p>
@@ -328,7 +328,16 @@ function getCrawlerContent(reqPath: string): string {
       </ul>
       
       <h3>Contact</h3>
-      <p>Call (855) 901-2072 for junk removal service. Same-day available. Book online at uptendapp.com.</p>
+      <p>Call (407) 624-5188 for junk removal service. Same-day available. Book online at uptendapp.com/partners/a2-nona-junk-removal.</p>
+      
+      <h3>About A² Nona Junk Removal</h3>
+      <p>A² Nona Junk Removal and Moving Services has been serving Lake Nona and the greater Orlando area with reliable, affordable junk removal. Whether it's a single piece of furniture or a full estate cleanout, the A² team shows up on time, works fast, and handles disposal responsibly. As a verified UpTend partner, every job is backed by UpTend's pricing guarantee and customer protection.</p>
+      
+      <h3>Frequently Asked Questions</h3>
+      <p><strong>How fast can you pick up junk in Lake Nona?</strong> Same-day pickup is available when you call before 2 PM. Most jobs in Lake Nona, Kissimmee, and St. Cloud are completed within 2-4 hours of booking.</p>
+      <p><strong>Do you haul away appliances and electronics?</strong> Yes. Refrigerators, washers, dryers, TVs, computers, and all household appliances. We handle disconnection for non-gas appliances at no extra charge.</p>
+      <p><strong>What happens to my junk after pickup?</strong> We sort everything. Usable furniture and goods go to local Orlando charities. Recyclables go to certified facilities. Only items that can't be donated or recycled go to the landfill. You get a disposal report.</p>
+      <p><strong>Can I get an exact price before you come?</strong> Yes. Send photos through UpTend and get a locked price before we arrive. No surprises, no hidden fees.</p>
     `;
   }
 
@@ -346,6 +355,31 @@ function getCrawlerContent(reqPath: string): string {
       <h3>How It Works in ${name}</h3>
       <p>1. Tell George what you need. 2. Get one transparent price. 3. Your vetted pro arrives — often same-day. One Price. One Pro. Done.</p>
       <p>Phone: (855) 901-2072 | uptendapp.com</p>
+    `;
+  }
+
+  // Junk removal city pages (e.g., /services/junk-removal/lake-nona)
+  const junkCityMatch = reqPath.match(/^\/services\/junk-removal\/([a-z-]+)$/);
+  if (junkCityMatch) {
+    const citySlug = junkCityMatch[1];
+    const cityName = citySlug.split("-").map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+    return `
+      <h1>Junk Removal in ${cityName}, FL | A² Nona Junk Removal | UpTend</h1>
+      <h2>Same-Day Junk Pickup in ${cityName}. Transparent Pricing. Eco-Friendly Disposal.</h2>
+      <p>Need junk removed in ${cityName}? A² Nona Junk Removal through UpTend provides fast, affordable junk removal throughout ${cityName} and the Orlando metro area. Licensed, insured, and background-checked.</p>
+      <h3>Junk Removal Pricing in ${cityName}</h3>
+      <ul>
+        <li>Single item pickup: $49-$99</li>
+        <li>Quarter truck load: from $99</li>
+        <li>Half truck load: $179</li>
+        <li>Full truck load: $299-$450</li>
+        <li>Estate cleanouts: $500-$1,500</li>
+      </ul>
+      <h3>What We Haul in ${cityName}</h3>
+      <p>Furniture, appliances, mattresses, electronics, yard waste, construction debris, hot tubs, exercise equipment, and general household junk. We sort everything for donation, recycling, or responsible disposal.</p>
+      <h3>Why ${cityName} Homeowners Choose A² Nona Through UpTend</h3>
+      <p>Same-day pickup when you book before 2 PM. Transparent pricing locked at booking. Licensed, insured, background-checked pros. Eco-friendly disposal with a report showing where everything went.</p>
+      <p>Call (407) 624-5188 or book online at uptendapp.com/partners/a2-nona-junk-removal</p>
     `;
   }
 
@@ -511,7 +545,7 @@ export function serveStatic(app: Express) {
         "@type": "LocalBusiness",
         name: "A² Nona Junk Removal",
         description: "Professional junk removal, estate cleanouts, and hauling services in Orlando Metro. Same-day pickup available. Licensed, insured, and verified through UpTend.",
-        telephone: "(855) 901-2072",
+        telephone: "(407) 624-5188",
         url: "https://uptendapp.com/partners/a2-nona-junk-removal",
         priceRange: "$$",
         address: { "@type": "PostalAddress", streetAddress: "10125 Peebles St", addressLocality: "Orlando", addressRegion: "FL", postalCode: "32827", addressCountry: "US" },

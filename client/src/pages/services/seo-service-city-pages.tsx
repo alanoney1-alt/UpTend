@@ -170,9 +170,9 @@ const SERVICES: ServiceInfo[] = [
     ],
     schemaServiceType: "Junk Removal Service",
     getDescription: (city) => [
-      `Need junk removed in ${city.name}? UpTend provides fast, affordable junk removal for ${city.homeTypes.join(", ")} throughout the ${city.name} area. From old furniture and appliances to yard debris and construction waste, our licensed and insured pros handle it all.`,
+      `Need junk removed in ${city.name}? UpTend's verified partner A² Nona Junk Removal provides fast, affordable junk removal for ${city.homeTypes.join(", ")} throughout the ${city.name} area. From old furniture and appliances to yard debris and construction waste, our licensed and insured pros handle it all.`,
       `We serve every neighborhood in ${city.name} including ${city.neighborhoods.slice(0, 5).join(", ")}, and more. Whether you're decluttering before a move, cleaning out an estate, or just tired of that pile in the garage, we'll have it gone — often the same day you book.`,
-      `Our ${city.name} junk removal team sorts every load, donating usable items to Central Florida charities and recycling what we can. Near ${city.landmarks[0]} or ${city.landmarks[1]}? We're just minutes away. Book online in 60 seconds and get a transparent price — no surprises.`,
+      `A² Nona Junk Removal through UpTend sorts every load in ${city.name}, donating usable items to Central Florida charities and recycling what we can. Near ${city.landmarks[0]} or ${city.landmarks[1]}? We're just minutes away. Call (407) 624-5188 or book online in 60 seconds — transparent pricing, no surprises.`,
     ],
   },
   {
