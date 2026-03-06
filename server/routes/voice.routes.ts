@@ -10,6 +10,7 @@
 import { Router, type Express } from "express";
 import { VoiceResponse, GEORGE_GREETING, BUD_FALLBACK, BUD_GOODBYE, sendAppLink } from "../services/voice-service";
 import { georgeVoiceChat, parseBookingSignal } from "../services/george-voice";
+import { notifyNewServiceRequest } from "../services/n8n-notify";
 import { storage } from "../storage";
 
 // Per-call conversation state tracking
@@ -197,6 +198,18 @@ export function registerVoiceRoutes(app: Express) {
           });
 
           console.log(`[Voice] Created service request ${request.id} for ${callerNumber}`);
+
+          // Fire n8n webhook (non-blocking)
+          notifyNewServiceRequest({
+            partnerSlug: 'uptend-main',
+            partnerEmail: 'alan@uptendapp.com',
+            customerName: name || 'Voice caller',
+            serviceType,
+            area: address || 'Orlando area',
+            notes: `Voice booking from ${callerNumber}`,
+            source: 'voice_call',
+            serviceRequestId: request.id,
+          });
 
           // Remove booking signal from AI response
           aiResponse = aiResponse.replace(/\[BOOK:.*?\]/, '').trim();

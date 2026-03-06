@@ -8,6 +8,7 @@
 import { Router } from "express";
 import type { Express } from "express";
 import { pool } from "../db";
+import { notifyNewServiceRequest } from "../services/n8n-notify";
 
 const router = Router();
 
@@ -70,6 +71,17 @@ ${address ? `<p><strong>Address:</strong> ${address}</p>` : ""}
     } catch (emailErr: any) {
       console.error("[Public Lead] Email failed:", emailErr.message);
     }
+
+    // Fire n8n webhook (non-blocking)
+    notifyNewServiceRequest({
+      partnerSlug: partnerSlug,
+      partnerEmail: 'alan@uptendapp.com',
+      customerName: name.trim(),
+      serviceType: service || 'hvac',
+      area: address?.trim() || 'Orlando area',
+      notes: issue,
+      source: 'website_form',
+    });
 
     res.json({ success: true, leadId });
   } catch (err: any) {

@@ -17,6 +17,7 @@ import { pool } from "../db";
 import { analyzeImages } from "../services/ai/openai-vision-client";
 import { getMulterStorage, isCloudStorage, uploadFile } from "../services/file-storage";
 import { sendProNewJob } from "../services/email-service";
+import { notifyPhotoQuote, notifyNewServiceRequest } from "../services/n8n-notify";
 import { nanoid } from "nanoid";
 
 const photoUpload = multer({
@@ -231,6 +232,32 @@ export function registerPartnerPhotoQuoteRoutes(app: Express) {
             customerName: parsed.customerName,
             description: `Photo Quote — ${aiAnalysis.condition || 'unknown'} condition, ${aiAnalysis.urgency || 'routine'} urgency. ${(aiAnalysis.recommended_services || []).join(', ')}. ${photoUrls.length} photo(s) uploaded. Review in dashboard and submit your quote.`,
           }).catch((err: any) => console.error('[EMAIL] Failed partner photo-quote notification:', err.message));
+        }
+
+        // Fire n8n webhooks (non-blocking)
+        notifyPhotoQuote({
+          partnerSlug: slug,
+          partnerEmail: partnerEmail || 'alan@uptendapp.com',
+          customerFirstName: parsed.customerName.split(' ')[0],
+          area: parsed.customerAddress.split(',').slice(-2).join(',').trim() || 'Orlando area',
+          serviceType: 'hvac',
+          urgency: aiAnalysis.urgency || 'routine',
+          customerNotes: parsed.notes || '',
+          quoteId: record.id,
+          serviceRequestId: serviceRequestResult?.rows[0]?.id || undefined,
+        });
+
+        if (serviceRequestResult?.rows[0]?.id) {
+          notifyNewServiceRequest({
+            partnerSlug: slug,
+            partnerEmail: partnerEmail || 'alan@uptendapp.com',
+            customerName: parsed.customerName,
+            serviceType: 'hvac',
+            area: parsed.customerAddress.split(',').slice(-2).join(',').trim() || 'Orlando area',
+            notes: parsed.notes || '',
+            source: 'photo_quote',
+            serviceRequestId: serviceRequestResult.rows[0].id,
+          });
         }
 
         res.json({
