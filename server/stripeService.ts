@@ -2,7 +2,7 @@ import { getUncachableStripeClient, getStripePublishableKey } from './stripeClie
 import { storage } from './storage';
 import { logError } from './utils/logger';
 
-import { getFeePercent, isLicensedTrade, UNLICENSED_FEE_RATE, CUSTOMER_FEE_RATE } from './services/fee-calculator';
+import { getFeePercent, isLicensedTrade, UNLICENSED_FEE_RATE, getCustomerFeeRate } from './services/fee-calculator';
 import { calculateFees as calculateFeesV2, type FeeBreakdown } from './services/fee-calculator-v2';
 
 // V2 fee model: 5% customer fee + 15% pro fee

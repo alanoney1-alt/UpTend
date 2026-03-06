@@ -51,9 +51,17 @@ export function isLicensedTrade(serviceType: string): boolean {
   return LICENSED_TRADES.has(serviceType);
 }
 
+export function getCustomerFeeRate(serviceType: string): number {
+  return isLicensedTrade(serviceType) ? CUSTOMER_FEE_LICENSED : CUSTOMER_FEE_UNLICENSED;
+}
+
 // Flat rate for all unlicensed work — no negotiation
 export const UNLICENSED_FEE_RATE = 0.15; // 15% from pro
-export const CUSTOMER_FEE_RATE = 0.05;   // 5% from customer (always, both models)
+// Customer fee depends on service type:
+// - Unlicensed: 5% customer fee (covers guarantee, insurance, platform)
+// - Licensed trades: 0% customer fee (partner's negotiated rate covers it)
+export const CUSTOMER_FEE_UNLICENSED = 0.05; // 5%
+export const CUSTOMER_FEE_LICENSED = 0.00;   // 0% — zero cost to customer for licensed work
 
 // ── Tier Definitions (legacy, kept for unlicensed services) ──
 
