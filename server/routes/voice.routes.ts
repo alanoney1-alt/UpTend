@@ -13,12 +13,47 @@ import { georgeVoiceChat, parseBookingSignal } from "../services/george-voice";
 import { notifyNewServiceRequest } from "../services/n8n-notify";
 import { storage } from "../storage";
 
+// ═══════════════════════════════════════════════════
+// PARTNER TRACKING NUMBERS
+// George checks which number was dialed to know the partner context
+// ═══════════════════════════════════════════════════
+interface PartnerTrackingConfig {
+  slug: string;
+  name: string;
+  serviceType: string;  // default service for this partner
+  greeting: string;     // custom George greeting
+}
+
+const PARTNER_TRACKING_NUMBERS: Record<string, PartnerTrackingConfig> = {
+  '+14076245188': {
+    slug: 'a2-nona-junk-removal',
+    name: 'A² Nona Junk Removal',
+    serviceType: 'junk_removal',
+    greeting: "Hey, this is George over at A Squared Nona Junk Removal. What can I help you get rid of today?",
+  },
+  '+14073056585': {
+    slug: 'comfort-solutions-tech',
+    name: 'Comfort Solutions Tech',
+    serviceType: 'hvac',
+    greeting: "Hey, this is George over at Comfort Solutions Tech. What's going on with your AC or heating?",
+  },
+  // Main UpTend number — no specific partner
+  '+18559012072': {
+    slug: 'uptend-main',
+    name: 'UpTend',
+    serviceType: '',
+    greeting: '',  // uses default GEORGE_GREETING
+  },
+};
+
 // Per-call conversation state tracking
 interface ConversationState {
   callerPhone: string;
   callerName?: string;
   serviceType?: string; // mapped to database key like "junk_removal"
   address?: string;
+  partnerSlug?: string;
+  partnerName?: string;
   conversationHistory: Array<{ role: 'user' | 'assistant'; content: string }>;
   readyToBook: boolean;
 }
@@ -36,8 +71,29 @@ export function registerVoiceRoutes(app: Express) {
   router.post("/incoming", async (req, res) => {
     try {
       const twiml = new VoiceResponse();
+      const dialedNumber = req.body.To || '';
+      const callerNumber = req.body.From || '';
+      const callSid = req.body.CallSid || '';
 
-      // Greet the caller with George's voice
+      // Detect partner from dialed number
+      const partner = PARTNER_TRACKING_NUMBERS[dialedNumber];
+      const greeting = (partner && partner.greeting) ? partner.greeting : GEORGE_GREETING;
+
+      console.log(`[Voice] Incoming call to ${dialedNumber} from ${callerNumber} — partner: ${partner?.slug || 'uptend-main'}`);
+
+      // Pre-initialize conversation state with partner context
+      if (callSid && partner && partner.slug !== 'uptend-main') {
+        conversationStates.set(callSid, {
+          callerPhone: callerNumber,
+          partnerSlug: partner.slug,
+          partnerName: partner.name,
+          serviceType: partner.serviceType,
+          conversationHistory: [],
+          readyToBook: false,
+        });
+      }
+
+      // Greet the caller with George's voice (partner-specific or default)
       const gather = twiml.gather({
         input: ["speech"],
         action: "/api/voice/process",
@@ -49,7 +105,7 @@ export function registerVoiceRoutes(app: Express) {
 
       gather.say(
         { voice: "Polly.Matthew", language: "en-US" },
-        GEORGE_GREETING
+        greeting
       );
 
       // If no speech input, repeat
@@ -148,7 +204,13 @@ export function registerVoiceRoutes(app: Express) {
       state.conversationHistory.push({ role: 'user', content: speechResult });
 
       // Send to George Voice Chat with full conversation context
-      const partnerContext = `The caller's phone number is ${callerNumber}. This is in Orlando, FL.`;
+      const partnerSlug = state.partnerSlug || 'uptend-main';
+      const partnerName = state.partnerName || 'UpTend';
+      const partnerService = state.serviceType || '';
+      const partnerHint = partnerService
+        ? `This caller dialed the ${partnerName} tracking number. They most likely need ${partnerService.replace(/_/g, ' ')}. Don't ask "what do you need" — jump straight into the service details (address, scope, scheduling). If they mention a DIFFERENT service, handle it normally.`
+        : '';
+      const partnerContext = `The caller's phone number is ${callerNumber}. This is in Orlando, FL. ${partnerHint}`;
       const aiResult = await georgeVoiceChat(speechResult, state.conversationHistory, partnerContext);
 
       let aiResponse = aiResult.response;
@@ -201,7 +263,7 @@ export function registerVoiceRoutes(app: Express) {
 
           // Fire n8n webhook (non-blocking)
           notifyNewServiceRequest({
-            partnerSlug: 'uptend-main',
+            partnerSlug: partnerSlug,
             partnerEmail: 'alan@uptendapp.com',
             customerName: name || 'Voice caller',
             serviceType,
