@@ -159,7 +159,7 @@ export default function SalesLeads() {
             <div className="text-4xl mb-3">📋</div>
             <h3 className="text-lg font-medium text-gray-300 mb-2">No leads yet</h3>
             <p className="text-gray-500 text-sm max-w-md mx-auto">
-              Leads will appear here after discovery conversations with Mr. George. Share your discovery link to start generating leads.
+              Leads will appear here after discovery conversations with George. Share your discovery link to start generating leads.
             </p>
           </div>
         ) : (
