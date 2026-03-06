@@ -198,6 +198,9 @@ const PoolCleaningLakeNona = lazy(() => import("@/pages/services/pool-cleaning-l
 const HomeServicesLakeNona = lazy(() => import("@/pages/services/home-services-lake-nona"));
 const HomeCleaningOrlando = lazy(() => import("@/pages/services/home-cleaning-orlando"));
 
+// HVAC Neighborhood Landing Pages
+const HVACNeighborhood = lazy(() => import("@/pages/services/hvac-neighborhood"));
+
 // HVAC Citation Magnet Pages
 const HvacCostsOrlando = lazy(() => import("@/pages/hvac-costs-orlando"));
 const HvacEmergency = lazy(() => import("@/pages/hvac-emergency"));
@@ -427,6 +430,21 @@ function Router() {
       <Route path="/academy/:slug" component={AcademySyllabus} />
       <Route path="/services" component={Services} />
       <Route path="/services/hvac" component={HVACService} />
+      {/* HVAC Neighborhood SEO Pages — individual static routes for crawlers */}
+      <Route path="/services/hvac-lake-nona" component={HVACNeighborhood} />
+      <Route path="/services/hvac-windermere" component={HVACNeighborhood} />
+      <Route path="/services/hvac-avalon-park" component={HVACNeighborhood} />
+      <Route path="/services/hvac-dr-phillips" component={HVACNeighborhood} />
+      <Route path="/services/hvac-winter-park" component={HVACNeighborhood} />
+      <Route path="/services/hvac-college-park" component={HVACNeighborhood} />
+      <Route path="/services/hvac-baldwin-park" component={HVACNeighborhood} />
+      <Route path="/services/hvac-celebration" component={HVACNeighborhood} />
+      <Route path="/services/hvac-hunters-creek" component={HVACNeighborhood} />
+      <Route path="/services/hvac-horizon-west" component={HVACNeighborhood} />
+      <Route path="/services/hvac-metrowest" component={HVACNeighborhood} />
+      <Route path="/services/hvac-laureate-park" component={HVACNeighborhood} />
+      {/* Dynamic HVAC neighborhood route (fallback) */}
+      <Route path="/services/hvac/:neighborhood" component={HVACNeighborhood} />
       <Route path="/services/home-audit" component={HomeAudit} />
       <Route path="/services/audit" component={HomeAudit} />
       <Route path="/home-audit" component={HomeAudit} />
