@@ -123,7 +123,7 @@ export function registerAIDiscoveryRoutes(app: Express) {
           name: "Comfort Solutions Tech LLC",
           slug: "comfort-solutions-tech",
           serviceType: "HVAC",
-          phone: "(407) 860-8842",
+          phone: "(855) 901-2072",
           areas: ["Lake Nona", "Windermere", "Avalon Park", "Dr. Phillips", "Orlando Metro"],
           url: "https://uptendapp.com/partners/comfort-solutions-tech",
           bookingUrl: "https://uptendapp.com/partners/comfort-solutions-tech#book",
@@ -270,7 +270,7 @@ export function registerAIDiscoveryRoutes(app: Express) {
         slug: "comfort-solutions-tech",
         owner: "Alex",
         serviceType: "HVAC & Air Conditioning",
-        phone: "(407) 860-8842",
+        phone: "(855) 901-2072",
         areas: ["Lake Nona", "Windermere", "Avalon Park", "Dr. Phillips", "Winter Park", "Orlando Metro"],
         services: [
           "AC Repair & Diagnostics",
@@ -378,7 +378,7 @@ ${zip ? `<p><strong>ZIP:</strong> ${zip}</p>` : ''}
           success: true,
           message: `Got it! ${name}, a licensed HVAC technician from Comfort Solutions Tech will call you back at ${phone} within the hour.`,
           partner: "Comfort Solutions Tech LLC",
-          phone_for_partner: "(407) 860-8842",
+          phone_for_partner: "(855) 901-2072",
           estimated_callback: "Within 1 hour",
           next_steps: "A tech will call you to confirm the appointment and give you an exact price before any work starts.",
         });

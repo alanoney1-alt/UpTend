@@ -16,6 +16,7 @@ import path from "path";
 import { pool } from "../db";
 import { analyzeImages } from "../services/ai/openai-vision-client";
 import { getMulterStorage, isCloudStorage, uploadFile } from "../services/file-storage";
+import { sendProNewJob } from "../services/email-service";
 
 const photoUpload = multer({
   storage: getMulterStorage("partner-photo-quotes"),
@@ -175,10 +176,53 @@ export function registerPartnerPhotoQuoteRoutes(app: Express) {
 
         const record = result.rows[0];
 
+        // Create a REAL service request so this flows through UpTend's system
+        const serviceRequestResult = await pool.query(
+          `INSERT INTO service_requests
+             (id, service_type, status, customer_name, customer_email, customer_phone,
+              address, description, photo_urls, partner_slug, created_at)
+           VALUES (gen_random_uuid(), $1, 'pending_estimate', $2, $3, $4, $5, $6, $7, $8, NOW())
+           RETURNING id`,
+          [
+            'hvac', // Default for Comfort Solutions — future: read from partner config
+            parsed.customerName,
+            parsed.customerEmail,
+            parsed.customerPhone,
+            parsed.customerAddress,
+            `AI Photo Analysis: ${aiAnalysis.technician_notes || 'Customer submitted photos for review.'}\n\nCondition: ${aiAnalysis.condition || 'unknown'}\nUrgency: ${aiAnalysis.urgency || 'routine'}\nRecommended: ${(aiAnalysis.recommended_services || []).join(', ')}${parsed.notes ? '\n\nCustomer notes: ' + parsed.notes : ''}`,
+            photoUrls,
+            slug,
+          ]
+        ).catch((err: any) => {
+          console.error("[Partner Photo Quote] Failed to create service request:", err.message);
+          return null;
+        });
+
+        // Link the photo quote record to the service request
+        if (serviceRequestResult?.rows[0]?.id) {
+          await pool.query(
+            `UPDATE partner_photo_quotes SET service_request_id = $1 WHERE id = $2`,
+            [serviceRequestResult.rows[0].id, record.id]
+          ).catch(() => {}); // Best effort — column may not exist yet
+        }
+
+        // Notify the partner via email using existing email service
+        const partnerEmail = slug === 'comfort-solutions-tech' ? 'alan@uptendapp.com' : process.env.ADMIN_EMAIL;
+        if (partnerEmail && serviceRequestResult?.rows[0]?.id) {
+          sendProNewJob(partnerEmail, {
+            id: serviceRequestResult.rows[0].id,
+            serviceType: 'hvac',
+            address: parsed.customerAddress.split(',').slice(-2).join(',').trim() || 'Orlando area',
+            customerName: parsed.customerName,
+            description: `Photo Quote — ${aiAnalysis.condition || 'unknown'} condition, ${aiAnalysis.urgency || 'routine'} urgency. ${(aiAnalysis.recommended_services || []).join(', ')}. ${photoUrls.length} photo(s) uploaded. Review in dashboard and submit your quote.`,
+          }).catch((err: any) => console.error('[EMAIL] Failed partner photo-quote notification:', err.message));
+        }
+
         res.json({
           success: true,
           id: record.id,
-          message: "Your photos have been submitted. Comfort Solutions Tech will call you shortly with a quote.",
+          serviceRequestId: serviceRequestResult?.rows[0]?.id || null,
+          message: "Your photos have been submitted! You'll receive a quote by email within a few hours.",
           ai_summary: {
             condition: aiAnalysis.condition,
             urgency: aiAnalysis.urgency,

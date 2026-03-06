@@ -498,7 +498,7 @@ export function serveStatic(app: Express) {
         "@type": "LocalBusiness",
         name: "Comfort Solutions Tech LLC",
         description: "HVAC repair, installation, and maintenance in Orlando Metro. Vetted and verified through UpTend platform.",
-        telephone: "(407) 860-8842",
+        telephone: "(855) 901-2072",
         url: "https://uptendapp.com/partners/comfort-solutions-tech",
         priceRange: "$$",
         address: { "@type": "PostalAddress", addressLocality: "Orlando", addressRegion: "FL", addressCountry: "US" },

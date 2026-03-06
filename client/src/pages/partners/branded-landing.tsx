@@ -79,7 +79,7 @@ const PARTNER_CONFIGS: Record<string, PartnerConfig> = {
     companyName: "Comfort Solutions Tech LLC",
     serviceType: "HVAC",
     tagline: "Your Comfort, Our Mission",
-    phone: "(407) 860-8842",
+    phone: "(855) 901-2072",
     ownerName: "Alex",
     accentColor: "#2563EB",
     heroText: "Need AC service in Orlando? Skip the runaround. Tell George what's going on and get a scope in minutes, not days.",

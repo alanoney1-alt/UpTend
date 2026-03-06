@@ -37,7 +37,7 @@ const PARTNER_CONFIGS: Record<string, {
 }> = {
   "comfort-solutions-tech": {
     companyName: "Comfort Solutions Tech LLC",
-    phone: "(407) 860-8842",
+    phone: "(855) 901-2072",
     serviceType: "HVAC",
     tagline: "Your Comfort, Our Mission",
     accentColor: "#2563EB",
@@ -75,7 +75,7 @@ const NEIGHBORHOOD_DEFAULTS: Record<string, {
     body_content: `Lake Nona's rapid growth and Florida's brutal summers make reliable HVAC service essential. Comfort Solutions Tech LLC serves Lake Nona homeowners with fast, honest AC repair, installation, and maintenance — no runaround, no surprise charges.\n\nWhether you're in a brand-new Medical City construction or an established Lake Nona Golf & Country Club home, our licensed technicians know the equipment that runs in this area. Central Florida heat is no joke — we respond fast and fix it right the first time.\n\nFrom routine tune-ups to emergency same-day repairs, Lake Nona residents trust Comfort Solutions Tech because we show up when we say we will, explain what we find, and price it fairly.`,
     faqs: [
       { question: "Do you service all of Lake Nona?", answer: "Yes — we cover all Lake Nona neighborhoods including Medical City, Eagle Creek, Laureate Park, and surrounding areas." },
-      { question: "How fast can you respond to an emergency?", answer: "We offer same-day emergency service. Call (407) 860-8842 and we'll dispatch a tech ASAP." },
+      { question: "How fast can you respond to an emergency?", answer: "We offer same-day emergency service. Call (855) 901-2072 and we'll dispatch a tech ASAP." },
       { question: "Do you work on new construction HVAC?", answer: "Absolutely. Lake Nona is growing fast — we work with new Carrier, Trane, and Lennox systems common in new builds." },
       { question: "What's included in a maintenance tune-up?", answer: "Filter inspection, coil cleaning, refrigerant check, electrical connections, thermostat calibration, and a written report of findings." },
     ],

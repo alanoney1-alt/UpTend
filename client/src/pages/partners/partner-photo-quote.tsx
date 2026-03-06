@@ -35,7 +35,7 @@ const PARTNER_CONFIGS: Record<string, {
   "comfort-solutions-tech": {
     companyName: "Comfort Solutions Tech LLC",
     tagline: "Your Comfort, Our Mission",
-    phone: "(407) 860-8842",
+    phone: "(855) 901-2072",
     ownerName: "Alex",
     accentColor: "#2563EB",
     serviceType: "HVAC",
@@ -43,7 +43,7 @@ const PARTNER_CONFIGS: Record<string, {
   "demo-hvac": {
     companyName: "Orlando Air Pro",
     tagline: "Orlando's Trusted HVAC Experts",
-    phone: "(407) 555-0199",
+    phone: "(855) 901-2072",
     ownerName: "Team",
     accentColor: "#2563EB",
     serviceType: "HVAC",
@@ -53,7 +53,7 @@ const PARTNER_CONFIGS: Record<string, {
 const DEFAULT_CONFIG = {
   companyName: "Comfort Solutions Tech LLC",
   tagline: "Your Comfort, Our Mission",
-  phone: "(407) 860-8842",
+  phone: "(855) 901-2072",
   ownerName: "Alex",
   accentColor: "#2563EB",
   serviceType: "HVAC",
