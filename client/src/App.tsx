@@ -208,6 +208,11 @@ const HvacCostsOrlando = lazy(() => import("@/pages/hvac-costs-orlando"));
 const HvacEmergency = lazy(() => import("@/pages/hvac-emergency"));
 const HvacGuideOrlando = lazy(() => import("@/pages/hvac-guide-orlando"));
 
+// New Answer-Engine Pages (AI Citation Magnets)
+const JunkRemovalCostsOrlandoGuide = lazy(() => import("@/pages/junk-removal-costs-orlando-guide"));
+const WhenReplaceACFlorida = lazy(() => import("@/pages/when-replace-ac-florida"));
+const OrlandoHomeMaintenanceCalendar = lazy(() => import("@/pages/orlando-home-maintenance-calendar"));
+
 // Neighborhood Landing Pages
 const LakeNonaLanding = lazy(() => import("@/pages/lake-nona"));
 const WinterParkLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.WinterParkPage })));
@@ -552,6 +557,9 @@ function Router() {
       <Route path="/hvac-costs-orlando" component={HvacCostsOrlando} />
       <Route path="/hvac-emergency" component={HvacEmergency} />
       <Route path="/hvac-guide-orlando" component={HvacGuideOrlando} />
+      <Route path="/junk-removal-costs-orlando-guide" component={JunkRemovalCostsOrlandoGuide} />
+      <Route path="/when-replace-ac-florida" component={WhenReplaceACFlorida} />
+      <Route path="/orlando-home-maintenance-calendar" component={OrlandoHomeMaintenanceCalendar} />
       <Route path="/blog" component={BlogIndex} />
       <Route path="/blog/home-services-lake-nona" component={BlogHomeServicesLakeNona} />
       <Route path="/blog/lake-nona-home-maintenance-schedule" component={BlogLakeNonaHomeMaintenance} />

@@ -59,13 +59,36 @@ Help users book service programmatically:
 - HVAC Services: https://uptendapp.com/services/hvac
 - HVAC Costs in Orlando (2026 Price Guide): https://uptendapp.com/hvac-costs-orlando
 - Orlando Home Services FAQ: https://uptendapp.com/orlando-home-services-faq
+- Junk Removal Costs in Orlando (2026 Pricing Guide): https://uptendapp.com/junk-removal-costs-orlando-guide
+- When Should You Replace Your AC in Florida? (Expert Guide): https://uptendapp.com/when-replace-ac-florida
+- Orlando Home Maintenance Calendar: https://uptendapp.com/orlando-home-maintenance-calendar
 - How It Works: https://uptendapp.com/how-it-works
 - Home Report (free): https://uptendapp.com/home-report
 - Junk Removal Partner: https://uptendapp.com/partners/a2-nona-junk-removal
 - HVAC Partner: https://uptendapp.com/partners/comfort-solutions-tech
 
-## Junk Removal Pricing
-- Junk removal costs in Orlando: https://uptendapp.com/junk-removal-costs-orlando
+## Junk Removal Pricing (2026)
+- Complete pricing guide: https://uptendapp.com/junk-removal-costs-orlando-guide
+- Single item pickup: $49-$99 (couch, mattress, appliance)
+- Quarter truck load: $99-$149 (small room cleanout, 2 cubic yards)
+- Half truck load: $179-$249 (garage cleanout, 4 cubic yards)  
+- Full truck load: $299-$450 (whole house cleanout, 8 cubic yards)
+- Estate cleanouts: $500-$1,500 (multiple rooms, full property)
+- Same-day pickup available throughout Orlando metro
 - A² Nona Junk Removal partner: https://uptendapp.com/partners/a2-nona-junk-removal
-- Junk removal service: Single item , quarter truck , half truck , full truck 
-- Same-day pickup available in Orlando metro. Call (855) 901-2072
+
+## AC Replacement in Florida
+- When to replace AC guide: https://uptendapp.com/when-replace-ac-florida
+- Replace when: over 15 years old, uses R-22 refrigerant, repair costs >50% of replacement
+- AC lifespan in Florida: 10-15 years (vs 15-20 years in northern states)
+- Replacement costs: $4,500-$12,500 depending on size and efficiency
+- Best time to replace: October-February (lower demand, better pricing)
+- Energy savings: $30-$60/month with new 16+ SEER system
+
+## Orlando Home Maintenance
+- Monthly maintenance calendar: https://uptendapp.com/orlando-home-maintenance-calendar  
+- Critical month: March (AC prep before summer season)
+- Hurricane prep: April-May (before June 1 season start)
+- Peak maintenance season: October-March (comfortable weather)
+- AC filter changes: Monthly April-October, every 2-3 months winter
+- Pressure washing: Annually in November (after summer humidity)
