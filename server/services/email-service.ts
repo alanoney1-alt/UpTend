@@ -569,3 +569,54 @@ export async function sendPaymentFailed(to: string, data: {
   const text = `Payment of ${money(data.amount)} failed for your ${data.serviceType} service. Reason: ${reasonText}. Please update your payment method at ${APP_URL()}/settings/billing`;
   return send(to, "Payment Failed - Action Required", html, text);
 }
+
+// ─── Quote-Confirm-Pay Flow Emails ──────────────────────────────────────────────
+
+export async function sendQuoteReady(to: string, request: any, quote: any) {
+  const confirmLink = `${APP_URL()}/confirm/${request.id}?token=${request.confirmToken}`;
+  const html = wrap("Your Quote is Ready! ", `
+  <p style="color:#555;line-height:1.6">Your ${request.serviceType || "service"} quote has been prepared by our licensed professional.</p>
+  <div style="background:#f9f9f9;border-radius:8px;padding:20px;margin:20px 0;text-align:center">
+    <div style="font-size:32px;font-weight:700;color:#F47C20;margin-bottom:8px">${money(quote.quotedPrice)}</div>
+    <div style="color:#888;font-size:14px">${request.serviceType || "Service"}</div>
+    ${quote.estimatedDuration ? `<div style="color:#888;font-size:13px;margin-top:4px">Est. duration: ${quote.estimatedDuration}</div>` : ""}
+  </div>
+  <table style="width:100%;border-collapse:collapse;margin:16px 0">
+    <tr><td style="padding:8px 0;color:#888;width:140px">Service</td><td style="padding:8px 0">${request.serviceType || "General"}</td></tr>
+    <tr><td style="padding:8px 0;color:#888">Address</td><td style="padding:8px 0">${request.pickupAddress || "On file"}</td></tr>
+    ${quote.scheduledDate ? `<tr><td style="padding:8px 0;color:#888">Scheduled</td><td style="padding:8px 0">${new Date(quote.scheduledDate).toLocaleDateString()}</td></tr>` : ""}
+    ${quote.quoteNotes ? `<tr><td style="padding:8px 0;color:#888">Notes</td><td style="padding:8px 0">${quote.quoteNotes}</td></tr>` : ""}
+  </table>
+  <p style="color:#555;line-height:1.6">Ready to proceed? Click below to confirm and authorize payment:</p>
+  <div style="text-align:center;margin:24px 0">
+    <a href="${confirmLink}" style="background:#F47C20;color:#fff;padding:14px 36px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block;font-size:16px">Confirm & Pay ${money(quote.quotedPrice)}</a>
+  </div>
+  <p style="color:#888;font-size:13px">You'll only be charged once the work is completed to your satisfaction.</p>
+  `);
+  const text = `Your ${request.serviceType} quote is ready: ${money(quote.quotedPrice)}. Confirm at ${confirmLink}`;
+  return send(to, `Your Quote is Ready - ${money(quote.quotedPrice)}`, html, text);
+}
+
+export async function sendBookingConfirmedToPartner(to: string, request: any) {
+  const html = wrap("Job Confirmed - Customer Approved Your Quote! ", `
+  <p style="color:#555;line-height:1.6">Great news! The customer approved your quote and authorized payment.</p>
+  <div style="background:#f0f8ff;border-radius:8px;padding:20px;margin:20px 0;border-left:4px solid #F47C20">
+    <div style="font-size:24px;font-weight:700;color:#F47C20;margin-bottom:8px">${money(request.quotedPrice || request.priceEstimate)}</div>
+    <div style="color:#555">Payment authorized - you'll be paid upon completion</div>
+  </div>
+  <table style="width:100%;border-collapse:collapse;margin:16px 0">
+    <tr><td style="padding:8px 0;color:#888;width:140px">Customer</td><td style="padding:8px 0;font-weight:600">${request.customerEmail || "See app"}</td></tr>
+    <tr><td style="padding:8px 0;color:#888">Service</td><td style="padding:8px 0">${request.serviceType || "General"}</td></tr>
+    <tr><td style="padding:8px 0;color:#888">Address</td><td style="padding:8px 0">${request.pickupAddress || "See app for full address"}</td></tr>
+    <tr><td style="padding:8px 0;color:#888">Phone</td><td style="padding:8px 0">${request.customerPhone || "See app"}</td></tr>
+    ${request.scheduledFor ? `<tr><td style="padding:8px 0;color:#888">Scheduled</td><td style="padding:8px 0">${new Date(request.scheduledFor).toLocaleDateString()}</td></tr>` : ""}
+    ${request.quoteNotes ? `<tr><td style="padding:8px 0;color:#888">Your Notes</td><td style="padding:8px 0">${request.quoteNotes}</td></tr>` : ""}
+  </table>
+  <p style="color:#555;line-height:1.6">The customer is ready to proceed. Contact them to schedule and complete the work.</p>
+  <div style="text-align:center;margin:24px 0">
+    <a href="${APP_URL()}/career" style="background:#F47C20;color:#fff;padding:12px 32px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block">View Job Details</a>
+  </div>
+  `);
+  const text = `Job confirmed! Customer approved your ${money(request.quotedPrice || request.priceEstimate)} quote. Address: ${request.pickupAddress}. View details at ${APP_URL()}/career`;
+  return send(to, "Job Confirmed - Payment Authorized!", html, text);
+}

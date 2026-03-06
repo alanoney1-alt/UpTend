@@ -100,6 +100,7 @@ const AIFeaturesHub = lazy(() => import("@/pages/ai/index"));
 const DocumentScanner = lazy(() => import("@/pages/ai/document-scanner"));
 const HomeScan = lazy(() => import("@/pages/ai/home-scan"));
 const MyJobs = lazy(() => import("@/pages/my-jobs"));
+const ConfirmBooking = lazy(() => import("@/pages/confirm-booking"));
 const ServiceDetail = lazy(() => import("@/pages/service-detail"));
 const Sustainability = lazy(() => import("@/pages/sustainability"));
 const Emergency = lazy(() => import("@/pages/emergency"));
@@ -310,6 +311,7 @@ function Router() {
       <Route path="/smart-book" component={SmartBooking} />
       <Route path="/book" component={Booking} />
       <Route path="/booking-success" component={BookingSuccess} />
+      <Route path="/confirm/:requestId" component={ConfirmBooking} />
       <Route path="/haulers" component={Haulers} />
       <Route path="/drive" component={Drive} />
       <Route path="/pros" component={HaulerLanding} />

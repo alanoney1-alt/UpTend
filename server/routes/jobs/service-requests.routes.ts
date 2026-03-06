@@ -6,11 +6,13 @@ import { z } from "zod";
 import { stripeService } from "../../stripeService";
 import { updateDwellScan } from "../../services/scoringService";
 import { processEsgForCompletedJob } from "../../services/job-completion-esg-integration";
-import { sendBookingConfirmation, sendJobAccepted, sendJobStarted, sendJobCompleted, sendProNewJob, sendProEnRoute, sendReviewReminder, sendProPaymentProcessed, sendAdminHighValueBooking } from "../../services/email-service";
+import { sendBookingConfirmation, sendJobAccepted, sendJobStarted, sendJobCompleted, sendProNewJob, sendProEnRoute, sendReviewReminder, sendProPaymentProcessed, sendAdminHighValueBooking, sendQuoteReady, sendBookingConfirmedToPartner } from "../../services/email-service";
 import { sendSms } from "../../services/notifications";
 import { onBookingConfirmed } from "../../services/george-events";
 import { db as feeDb } from "../../db";
 import { sql as feeSql } from "drizzle-orm";
+import { isLicensedTrade } from "../../services/fee-calculator";
+import { nanoid } from "nanoid";
 
 async function getActiveCertCountForPro(proId: string): Promise<number> {
   const now = new Date().toISOString();
@@ -187,12 +189,17 @@ export function registerServiceRequestRoutes(app: Express) {
         console.log("[DEV] Skipping PaymentIntent creation (no Stripe customer or key)");
       }
 
+      // For licensed trades (HVAC, plumbing, electrical), start with pending_estimate status
+      // so partners can submit custom quotes before customer payment
+      const isLicensed = isLicensedTrade(validatedData.serviceType);
+      const initialStatus = isLicensed ? "pending_estimate" : "matching";
+
       const request = await storage.createServiceRequest({
         ...validatedData,
         priceEstimate: quote.totalPrice,
         livePrice: quote.totalPrice,
         surgeFactor: quote.surgeMultiplier,
-        status: "matching", // Start in matching status
+        status: initialStatus,
         matchingStartedAt,
         matchingExpiresAt,
         needsManualMatch: false,
@@ -206,8 +213,10 @@ export function registerServiceRequestRoutes(app: Express) {
         ceilingLockedAt: new Date().toISOString(),
       });
 
-      // Use smart matching with language preference
-      const matchedHaulers = await storage.getSmartMatchedHaulers({
+      // Skip auto-matching for licensed trades - they need partner quote submission first
+      if (!isLicensed) {
+        // Use smart matching with language preference
+        const matchedHaulers = await storage.getSmartMatchedHaulers({
         serviceType: validatedData.serviceType,
         loadSize: validatedData.loadEstimate,
         pickupLat: validatedData.pickupLat || undefined,
@@ -235,6 +244,7 @@ export function registerServiceRequestRoutes(app: Express) {
           expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
           createdAt: new Date().toISOString(),
         });
+      }
       }
 
       // Fire-and-forget: booking confirmation email + SMS
@@ -351,6 +361,175 @@ export function registerServiceRequestRoutes(app: Express) {
       }
 
       res.status(500).json({ error: "Failed to update service request" });
+    }
+  });
+
+  // Partner submits quote for licensed trade job
+  app.patch("/api/service-requests/:id/quote", requireAuth, requireHauler, async (req: any, res) => {
+    try {
+      const userId = (req.user as any).userId || (req.user as any).id;
+      const { quotedPrice, quoteNotes, estimatedDuration, scheduledDate } = req.body;
+
+      // Validate required fields
+      if (!quotedPrice) {
+        return res.status(400).json({ error: "quotedPrice is required" });
+      }
+
+      // Get the service request
+      const request = await storage.getServiceRequest(req.params.id);
+      if (!request) {
+        return res.status(404).json({ error: "Service request not found" });
+      }
+
+      // Verify the request is in pending_estimate status
+      if (request.status !== "pending_estimate") {
+        return res.status(400).json({ error: "Quote can only be submitted for requests in pending_estimate status" });
+      }
+
+      // Verify the partner is the assigned hauler
+      if (request.assignedHaulerId !== userId && !request.assignedHaulerId) {
+        // If no hauler assigned yet, assign the current user
+        const haulerProfile = await storage.getHaulerProfile(userId);
+        if (!haulerProfile) {
+          return res.status(400).json({ error: "Hauler profile not found" });
+        }
+        // Auto-assign the hauler submitting the quote
+        await storage.updateServiceRequest(req.params.id, {
+          assignedHaulerId: haulerProfile.id,
+        });
+      } else if (request.assignedHaulerId && request.assignedHaulerId !== userId) {
+        return res.status(403).json({ error: "Only the assigned hauler can submit a quote" });
+      }
+
+      // Generate confirmation token
+      const confirmToken = nanoid(32);
+
+      // Update service request with quote details
+      const updatedRequest = await storage.updateServiceRequest(req.params.id, {
+        quotedPrice,
+        quoteNotes,
+        estimatedDuration,
+        scheduledFor: scheduledDate,
+        confirmToken,
+        status: "quoted",
+      });
+
+      if (!updatedRequest) {
+        return res.status(404).json({ error: "Failed to update service request" });
+      }
+
+      // Send quote ready email to customer
+      if (updatedRequest.customerEmail) {
+        sendQuoteReady(updatedRequest.customerEmail, updatedRequest, {
+          quotedPrice,
+          quoteNotes,
+          estimatedDuration,
+          scheduledDate
+        }).catch(err => console.error('[EMAIL] Failed quote-ready:', err.message));
+      }
+
+      res.json({ success: true, request: updatedRequest });
+    } catch (error) {
+      console.error("Error submitting quote:", error);
+      res.status(500).json({ error: "Failed to submit quote" });
+    }
+  });
+
+  // Customer confirms quote and authorizes payment
+  app.post("/api/service-requests/:id/confirm", async (req: any, res) => {
+    try {
+      const { token, paymentMethodId } = req.body;
+
+      if (!token) {
+        return res.status(400).json({ error: "Confirmation token is required" });
+      }
+      if (!paymentMethodId) {
+        return res.status(400).json({ error: "Payment method ID is required" });
+      }
+
+      // Get service request
+      const request = await storage.getServiceRequest(req.params.id);
+      if (!request) {
+        return res.status(404).json({ error: "Service request not found" });
+      }
+
+      // Verify confirmation token
+      if (request.confirmToken !== token) {
+        return res.status(401).json({ error: "Invalid confirmation token" });
+      }
+
+      // Verify request is in quoted status
+      if (request.status !== "quoted") {
+        return res.status(400).json({ error: "Quote must be in quoted status to confirm" });
+      }
+
+      // Get customer for Stripe operations
+      const customer = await storage.getUser(request.customerId);
+      if (!customer?.stripeCustomerId) {
+        return res.status(400).json({ error: "Customer payment setup required" });
+      }
+
+      // Create PaymentIntent with auth-only (manual capture)
+      let paymentResult = null;
+      try {
+        const paymentIntent = await stripeService.createPaymentIntent(
+          request.quotedPrice || request.priceEstimate || 0,
+          customer.stripeCustomerId,
+          `sr-${request.id}`,
+          'independent'
+        );
+
+        // Import getUncachableStripeClient directly since it's not exposed via stripeService
+        const { getUncachableStripeClient } = await import("../../stripeClient");
+        const stripe = await getUncachableStripeClient();
+        const confirmedPaymentIntent = await stripe.paymentIntents.confirm(paymentIntent.id, {
+          payment_method: paymentMethodId,
+        });
+
+        paymentResult = confirmedPaymentIntent;
+      } catch (stripeError) {
+        console.error("Stripe payment authorization failed:", stripeError);
+        return res.status(400).json({
+          error: "Payment authorization failed",
+          details: (stripeError as any).message
+        });
+      }
+
+      // Update service request status to confirmed
+      const confirmedRequest = await storage.updateServiceRequest(req.params.id, {
+        status: "confirmed",
+        stripePaymentIntentId: paymentResult.id,
+        paymentStatus: "authorized",
+      });
+
+      if (!confirmedRequest) {
+        return res.status(500).json({ error: "Failed to confirm booking" });
+      }
+
+      // Send confirmation emails
+      if (confirmedRequest.customerEmail) {
+        sendBookingConfirmation(confirmedRequest.customerEmail, confirmedRequest).catch(err =>
+          console.error('[EMAIL] Failed booking confirmation:', err.message));
+      }
+
+      // Send notification to partner
+      if (confirmedRequest.assignedHaulerId) {
+        const haulerProfile = await storage.getHaulerProfile(confirmedRequest.assignedHaulerId).catch(() => null);
+        const haulerUser = haulerProfile?.userId ? await storage.getUser(haulerProfile.userId).catch(() => null) : null;
+        if (haulerUser?.email) {
+          sendBookingConfirmedToPartner(haulerUser.email, confirmedRequest).catch(err =>
+            console.error('[EMAIL] Failed partner confirmation:', err.message));
+        }
+      }
+
+      res.json({
+        success: true,
+        request: confirmedRequest,
+        paymentIntentId: paymentResult.id
+      });
+    } catch (error) {
+      console.error("Error confirming booking:", error);
+      res.status(500).json({ error: "Failed to confirm booking" });
     }
   });
 

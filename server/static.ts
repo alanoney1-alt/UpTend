@@ -107,6 +107,27 @@ function getCrawlerContent(reqPath: string): string {
       </ul>
       <p>Powered by RentCast property data and GPT-4o analysis. Available for homes in the Orlando Metro area.</p>
     `,
+    "/confirm": `
+      <h1>Confirm Your Service Booking | UpTend</h1>
+      <h2>Review Quote and Authorize Payment</h2>
+      <p>Confirm your custom quote from a licensed UpTend professional. Review the service details, pricing, and schedule before authorizing payment.</p>
+      <h3>Your Secure Booking Process</h3>
+      <ol>
+        <li>Review your custom quote from our licensed professional</li>
+        <li>Verify service details, address, and scheduled date</li>
+        <li>Authorize payment with your credit card (you're only charged when work is complete)</li>
+        <li>Your pro receives confirmation and will contact you to schedule</li>
+      </ol>
+      <h3>Payment Security</h3>
+      <ul>
+        <li>Secure payment processing through Stripe</li>
+        <li>Your card is authorized but not charged until work is complete</li>
+        <li>100% satisfaction guarantee — if you're not happy, you don't pay</li>
+        <li>All professionals are licensed, insured, and background-checked</li>
+      </ul>
+      <h3>Need Help?</h3>
+      <p>Questions about your quote? Call us at (855) 901-2072 or chat with George at uptendapp.com. Available 24/7.</p>
+    `,
   };
 
   // Answer-engine pages (AI citation magnets)
@@ -299,6 +320,11 @@ function getCrawlerContent(reqPath: string): string {
       <h2>One Price. One Pro. Done.</h2>
       <p>Professional ${name.toLowerCase()} services from vetted, licensed pros in the Orlando Metro area. Transparent pricing. No surprises. Call (855) 901-2072 or chat with George at uptendapp.com.</p>
     `;
+  }
+
+  // Handle dynamic routes
+  if (reqPath.startsWith("/confirm/")) {
+    return pages["/confirm"] || "";
   }
 
   return pages[reqPath] || "";

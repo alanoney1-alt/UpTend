@@ -494,6 +494,11 @@ export const serviceRequests = pgTable("service_requests", {
   scopeVerified: boolean("scope_verified").default(false),
   // Business Partner attribution
   businessPartnerId: varchar("business_partner_id"),
+  // Quote-Confirm-Pay flow fields
+  confirmToken: text("confirm_token"),
+  quoteNotes: text("quote_notes"),
+  quotedPrice: real("quoted_price"), // Partner-submitted quote price (may differ from priceEstimate)
+  estimatedDuration: text("estimated_duration"),
 });
 
 export const serviceRequestsRelations = relations(serviceRequests, ({ one, many }) => ({
