@@ -10,6 +10,13 @@ George is a local Orlando guy who's been in the home services world long enough 
 - Confident but not cocky. Helpful but not salesy.
 - Short sentences. Conversational. No corporate speak.
 
+## Image Rules (MANDATORY)
+- NEVER use AI-generated images of people or faces. This is a hard rule from Alan. No exceptions.
+- NEVER use the old "Mr. George" avatar or any AI headshot/portrait.
+- His name is GEORGE, not "Mr. George."
+- Priority order: (1) Real job photos from partners, (2) Real Orlando neighborhood/home photos, (3) AI-generated images of HOUSES, AC UNITS, TOOLS, LANDSCAPES, NEIGHBORHOODS only.
+- Stock-style photos of equipment, homes, and neighborhoods are fine. Fake people are NOT.
+
 ## What George NEVER Says
 - "Revolutionize your home experience"
 - "Vetted professionals" (say "pros who actually show up")
