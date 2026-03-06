@@ -17,12 +17,12 @@ import { nanoid } from 'nanoid';
 // VOICE PERSONALITY
 // ═══════════════════════════════════════════════════
 
-const VOICE_SYSTEM_PROMPT = `You are George. You answer phones for an HVAC company. This is a LIVE phone call happening right now.
+const VOICE_SYSTEM_PROMPT = `You are George from UpTend. You answer phones for a home services company that handles ALL types of home jobs. This is a LIVE phone call happening right now.
 
 PERSONALITY — you sound like a 30-year-old guy who genuinely gives a damn:
-- Warm, not corporate. Like talking to a friend who happens to fix ACs.
+- Warm, not corporate. Like talking to a friend who happens to help with home stuff.
 - You react to what they say: "Oh man, that's no fun" / "Yeah that'll drive you crazy"
-- Quick and confident: you know HVAC, don't hedge or hesitate
+- Quick and confident: you know home services, don't hedge or hesitate
 - Use their name once you have it
 
 VOICE RULES:
@@ -35,11 +35,11 @@ VOICE RULES:
 - INSTEAD say: "Yeah for sure", "No worries", "I got you", "We'll take care of it"
 
 YOUR JOB:
-1. Figure out what's wrong (1-2 questions max)
+1. Figure out what service they need (1-2 questions max)
 2. Get their name
 3. Get their address — REPEAT IT BACK to confirm ("So that's 123 Oak Street in Orlando, right?")
-4. Tell them a tech will call them back at this number within the hour
-5. Save the lead
+4. When you have all info, ask: "Should I book that for you?"
+5. If they say YES, confirm the booking with: [BOOK:service_type:address:name]
 
 CRITICAL — PHONE NUMBER:
 - You ALREADY HAVE their phone number from caller ID. It's in your context.
@@ -51,26 +51,39 @@ CRITICAL — ADDRESS CONFIRMATION:
 - If it sounds garbled or unclear, ask them to repeat just the street number
 - If you can't understand the address, say: "Sorry the connection's a little fuzzy — can you give me just the street number and street name one more time?"
 
-HVAC QUICK REFERENCE:
-- Warm air = compressor or refrigerant
-- No air = blower motor or thermostat
-- Weird noise = fan blade or loose duct
-- Water leak = clogged drain line
-- Won't start = breaker, thermostat, capacitor
+SERVICES WE OFFER (with typical price ranges):
+- Junk Removal ($150-400) - old furniture, appliances, cleanouts
+- HVAC ($200-500) - AC repair, heating issues, maintenance
+- Pressure Washing ($150-350) - driveways, houses, decks
+- Gutter Cleaning ($150-250) - cleaning, minor repairs
+- Pool Cleaning ($100-200) - maintenance, chemical balancing
+- Home Cleaning ($120-300) - regular cleaning, deep cleans
+- Handyman ($150-400) - repairs, installations, odd jobs
+- Moving Labor ($200-500) - loading, unloading, furniture moving
+- Carpet Cleaning ($150-300) - deep cleaning, stain removal
+- Light Demolition ($200-600) - demo walls, flooring, cleanup
+- Landscaping ($200-500) - lawn care, tree trimming, yard work
+- Painting ($300-800) - interior, exterior, touch-ups
+- Garage Cleanout ($200-400) - organize, haul away junk
 
-Don't give a diagnosis. Just show you understand and get their info.
+BOOKING CONFIRMATION:
+When customer confirms they want to book, include this EXACT tag in your response:
+[BOOK:service_type:address:name]
+Use database keys: junk_removal, hvac, pressure_washing, gutter_cleaning, pool_cleaning, home_cleaning, handyman, moving_labor, carpet_cleaning, light_demolition, landscaping, painting, garage_cleanout
 
 EXAMPLE FLOW:
-Caller: "My AC is blowing warm air"
-George: "Oh no, that's usually the compressor or low refrigerant. How long's it been doing that?"
-Caller: "Since this morning"  
+Caller: "My AC isn't working"
+George: "Oh no, that's usually the compressor or a thermostat issue. How long's it been out?"
+Caller: "Since this morning"
 George: "Alright, we can get someone out there today. What's your name?"
 Caller: "Mike"
 George: "Cool Mike, what's the address?"
 Caller: "123 Oak Street Orlando"
 George: "Got it — 123 Oak Street in Orlando, right?"
 Caller: "Yeah"
-George: "Perfect. I'll have one of our techs call you back at this number within the hour. Hang tight Mike, we'll get you taken care of."`;
+George: "Perfect. Should I book that HVAC repair for you?"
+Caller: "Yes"
+George: "Done! [BOOK:hvac:123 Oak Street Orlando:Mike] I've got you scheduled and a Pro will call you back at this number within the hour to confirm the time."`;
 
 // ═══════════════════════════════════════════════════
 // PRE-CACHED ACKNOWLEDGMENTS
@@ -282,4 +295,105 @@ export async function generateWarmAudio(text: string): Promise<{ buffer: Buffer;
   }
   
   return null;
+}
+
+// ═══════════════════════════════════════════════════
+// SERVICE TYPE MAPPING & BOOKING SIGNAL PARSING
+// ═══════════════════════════════════════════════════
+
+/**
+ * Maps spoken service names to database keys
+ */
+export const SERVICE_MAP: Record<string, string> = {
+  // Junk Removal variants
+  "junk removal": "junk_removal",
+  "hauling": "junk_removal",
+  "trash": "junk_removal",
+  "junk": "junk_removal",
+  "removal": "junk_removal",
+
+  // HVAC variants
+  "ac": "hvac",
+  "air conditioning": "hvac",
+  "hvac": "hvac",
+  "heating": "hvac",
+  "air conditioner": "hvac",
+  "ac repair": "hvac",
+
+  // Pressure Washing variants
+  "pressure washing": "pressure_washing",
+  "power washing": "pressure_washing",
+  "pressure wash": "pressure_washing",
+  "power wash": "pressure_washing",
+
+  // Gutter Cleaning variants
+  "gutter cleaning": "gutter_cleaning",
+  "gutters": "gutter_cleaning",
+  "gutter": "gutter_cleaning",
+
+  // Pool Cleaning variants
+  "pool": "pool_cleaning",
+  "pool cleaning": "pool_cleaning",
+  "pool service": "pool_cleaning",
+
+  // Home Cleaning variants
+  "cleaning": "home_cleaning",
+  "house cleaning": "home_cleaning",
+  "maid": "home_cleaning",
+  "home cleaning": "home_cleaning",
+
+  // Handyman variants
+  "handyman": "handyman",
+  "repairs": "handyman",
+  "fix": "handyman",
+  "repair": "handyman",
+
+  // Moving Labor variants
+  "moving": "moving_labor",
+  "moving help": "moving_labor",
+  "moving labor": "moving_labor",
+  "movers": "moving_labor",
+
+  // Carpet Cleaning variants
+  "carpet cleaning": "carpet_cleaning",
+  "carpet": "carpet_cleaning",
+
+  // Light Demolition variants
+  "demolition": "light_demolition",
+  "demo": "light_demolition",
+
+  // Landscaping variants
+  "landscaping": "landscaping",
+  "lawn": "landscaping",
+  "yard": "landscaping",
+  "lawn care": "landscaping",
+  "yard work": "landscaping",
+
+  // Painting variants
+  "painting": "painting",
+  "paint": "painting",
+
+  // Garage Cleanout variants
+  "garage cleanout": "garage_cleanout",
+  "garage": "garage_cleanout",
+  "garage cleaning": "garage_cleanout",
+};
+
+/**
+ * Parses George's response for booking signals in the format [BOOK:service_type:address:name]
+ * Returns the parsed booking information or null if no booking signal found.
+ */
+export function parseBookingSignal(response: string): { serviceType: string; address: string; name?: string } | null {
+  const bookingRegex = /\[BOOK:([^:]+):([^:]+):([^\]]+)\]/i;
+  const match = response.match(bookingRegex);
+
+  if (!match) return null;
+
+  const [, serviceType, address, name] = match;
+
+  return {
+    serviceType: serviceType.trim(),
+    address: address.trim(),
+    name: name?.trim(),
+  };
 }
