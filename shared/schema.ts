@@ -114,6 +114,9 @@ export const haulerProfiles = pgTable("hauler_profiles", {
   walkthroughQualified: boolean("walkthrough_qualified").default(true), // Can perform interior walkthroughs
   canDoCombinedDwellscan: boolean("can_do_combined_dwellscan").default(false), // drone_certified AND walkthrough_qualified — opts in during onboarding
   payoutPercentage: real("payout_percentage").default(0.75), // 75% for independent, 80% for verified_pro
+  // Per-partner negotiated commission rate (overrides default 15%)
+  // null = use default fee tiers. Set to e.g. 0.12 for 12%, 0.10 for 10%
+  customFeeRate: real("custom_fee_rate"),
   isVerifiedLlc: boolean("is_verified_llc").default(false),
   fiveStarJobCount: real("five_star_job_count").default(0),
   loyaltyPriorityBoost: boolean("loyalty_priority_boost").default(false),

@@ -99,6 +99,7 @@ export async function calculatePlatformFee(proId: string): Promise<FeeStatus> {
     .select({
       id: haulerProfiles.id,
       isVerifiedLlc: haulerProfiles.isVerifiedLlc,
+      customFeeRate: haulerProfiles.customFeeRate,
     })
     .from(haulerProfiles)
     .where(eq(haulerProfiles.userId, proId))
@@ -117,8 +118,11 @@ export async function calculatePlatformFee(proId: string): Promise<FeeStatus> {
   `);
   const activeCertCount = Number((activeCertsResult.rows[0] as any)?.count || 0);
 
-  // Current fee (cert-based)
-  const baseFeeRate = getFeeRate(isLlc, activeCertCount);
+  // Per-partner custom rate takes priority over tier-based calculation
+  // This allows negotiated commission rates for each licensed partner
+  const baseFeeRate = profile?.customFeeRate != null
+    ? profile.customFeeRate
+    : getFeeRate(isLlc, activeCertCount);
 
   // Apply invite code discount if active (lookup by hauler profile id)
   const inviteDiscount = haulerProfileId

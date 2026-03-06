@@ -25,20 +25,22 @@ export interface PayoutBreakdown {
 }
 
 export class StripeService {
-  getPlatformFeePercent(_pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, activeCertCount: number = 0): number {
+  getPlatformFeePercent(_pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, activeCertCount: number = 0, customFeeRate?: number | null): number {
+    // Per-partner negotiated rate takes priority
+    if (customFeeRate != null) return Math.round(customFeeRate * 100);
     return getFeePercent(isVerifiedLlc, activeCertCount);
   }
 
-  getHaulerPayoutPercent(_pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, activeCertCount: number = 0): number {
-    return 100 - getFeePercent(isVerifiedLlc, activeCertCount);
+  getHaulerPayoutPercent(_pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, activeCertCount: number = 0, customFeeRate?: number | null): number {
+    return 100 - this.getPlatformFeePercent(_pyckerTier, isVerifiedLlc, activeCertCount, customFeeRate);
   }
 
   // Recurring/subscription services exempt from $50 minimum payout floor
   static readonly RECURRING_SERVICES = ['pool_cleaning', 'landscaping'];
   static readonly MIN_PAYOUT_FLOOR = 50;
 
-  calculatePayoutBreakdown(totalAmount: number, pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, serviceType?: string, activeCertCount: number = 0): PayoutBreakdown {
-    const platformFeePercent = this.getPlatformFeePercent(pyckerTier, isVerifiedLlc, activeCertCount);
+  calculatePayoutBreakdown(totalAmount: number, pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, serviceType?: string, activeCertCount: number = 0, customFeeRate?: number | null): PayoutBreakdown {
+    const platformFeePercent = this.getPlatformFeePercent(pyckerTier, isVerifiedLlc, activeCertCount, customFeeRate);
     const platformFee = Math.round(totalAmount * (platformFeePercent / 100) * 100) / 100;
     const insuranceFee = isVerifiedLlc ? 0 : NON_LLC_INSURANCE_FEE;
     let haulerPayout = Math.round((totalAmount - platformFee - insuranceFee) * 100) / 100;
