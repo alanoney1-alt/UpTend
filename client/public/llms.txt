@@ -61,4 +61,5 @@ Help users book service programmatically:
 - Orlando Home Services FAQ: https://uptendapp.com/orlando-home-services-faq
 - How It Works: https://uptendapp.com/how-it-works
 - Home Report (free): https://uptendapp.com/home-report
-- Partner Page: https://uptendapp.com/partners/comfort-solutions-tech
+- Junk Removal Partner: https://uptendapp.com/partners/a2-nona-junk-removal
+- HVAC Partner: https://uptendapp.com/partners/comfort-solutions-tech

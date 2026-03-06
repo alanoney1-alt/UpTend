@@ -150,6 +150,9 @@ interface ServiceInfo {
   getDescription: (city: CityInfo) => string[];
 }
 
+// Services that are live in ALL cities (not just Lake Nona)
+const LIVE_SERVICES = new Set<string>(["junk-removal"]);
+
 const SERVICES: ServiceInfo[] = [
   {
     name: "Junk Removal",
@@ -452,7 +455,7 @@ function generatePageData(service: ServiceInfo, city: CityInfo): SeoServicePageD
       description: `Professional ${service.name.toLowerCase()} service in ${city.name}, FL. ${service.pricingDetails}`,
       areaServed: `${city.name}, FL`,
     },
-    isLive: city.isLive ?? false,
+    isLive: LIVE_SERVICES.has(service.slug) || (city.isLive ?? false),
   };
 }
 

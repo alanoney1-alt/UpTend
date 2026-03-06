@@ -229,6 +229,49 @@ function getCrawlerContent(reqPath: string): string {
     return answerPages[reqPath];
   }
 
+  // Partner pages
+  if (reqPath === "/partners/a2-nona-junk-removal") {
+    return `
+      <h1>A² Nona Junk Removal — Orlando Junk Removal Service | UpTend</h1>
+      <h2>Same-Day Junk Pickup. Transparent Pricing. Eco-Friendly Disposal.</h2>
+      <p>A² Nona Junk Removal is a licensed, insured junk removal service based in Lake Nona, Orlando. Serving the entire Orlando metro area through UpTend. One Price. One Pro. Done.</p>
+      
+      <h3>Junk Removal Services</h3>
+      <ul>
+        <li>Residential junk removal — furniture, appliances, mattresses, electronics</li>
+        <li>Estate cleanouts — full home cleanouts for estates, foreclosures, and moves</li>
+        <li>Garage cleanouts — sort, organize, donate, haul away</li>
+        <li>Construction debris — renovation waste, drywall, lumber, tiles</li>
+        <li>Yard waste — branches, stumps, landscaping debris</li>
+        <li>Commercial cleanouts — office furniture, equipment, storage units</li>
+      </ul>
+      
+      <h3>Junk Removal Pricing in Orlando</h3>
+      <ul>
+        <li>Quarter truck load: from $99</li>
+        <li>Half truck load: $179</li>
+        <li>Full truck load: $299</li>
+        <li>Heavy items (hot tubs, pianos): +$50</li>
+        <li>No hidden fees. Price locked at booking.</li>
+      </ul>
+      
+      <h3>Service Areas</h3>
+      <p>Lake Nona, Windermere, Avalon Park, Dr. Phillips, Winter Park, College Park, Baldwin Park, Celebration, Hunter's Creek, Horizon West, MetroWest, Laureate Park, St. Cloud, Kissimmee, Orlando</p>
+      
+      <h3>Why Choose A² Nona Through UpTend?</h3>
+      <ul>
+        <li>Same-day pickup available</li>
+        <li>Transparent pricing — know the cost before we arrive</li>
+        <li>Licensed, insured, background-checked</li>
+        <li>Eco-friendly: items sorted for donation, recycling, or responsible disposal</li>
+        <li>Disposal tracking — you receive a report showing where everything went</li>
+      </ul>
+      
+      <h3>Contact</h3>
+      <p>Call (855) 901-2072 for junk removal service. Same-day available. Book online at uptendapp.com.</p>
+    `;
+  }
+
   // Neighborhood pages
   const neighborhoodMatch = reqPath.match(/^\/neighborhoods\/([a-z-]+)$/);
   if (neighborhoodMatch) {
@@ -397,6 +440,32 @@ export function serveStatic(app: Express) {
     });
 
     // Partner page schemas
+    if (reqPath.startsWith("/partners/a2-nona-junk-removal")) {
+      jsonLdBlocks.push({
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        name: "A² Nona Junk Removal",
+        description: "Professional junk removal, estate cleanouts, and hauling services in Orlando Metro. Same-day pickup available. Licensed, insured, and verified through UpTend.",
+        telephone: "(855) 901-2072",
+        url: "https://uptendapp.com/partners/a2-nona-junk-removal",
+        priceRange: "$$",
+        address: { "@type": "PostalAddress", streetAddress: "10125 Peebles St", addressLocality: "Orlando", addressRegion: "FL", postalCode: "32827", addressCountry: "US" },
+        areaServed: ["Lake Nona", "Windermere", "Avalon Park", "Dr. Phillips", "Winter Park", "College Park", "Baldwin Park", "Celebration", "Hunter's Creek", "Horizon West", "MetroWest", "Laureate Park", "Orlando", "St. Cloud", "Kissimmee"].map(a => ({ "@type": "City", name: a })),
+        hasOfferCatalog: {
+          "@type": "OfferCatalog",
+          name: "Junk Removal Services",
+          itemListElement: [
+            { "@type": "Offer", itemOffered: { "@type": "Service", name: "Junk Removal", description: "Same-day junk pickup and hauling. Quarter truck from $99, half truck $179, full truck $299." } },
+            { "@type": "Offer", itemOffered: { "@type": "Service", name: "Estate Cleanout", description: "Full estate and foreclosure cleanouts. Sort, haul, donate coordination." } },
+            { "@type": "Offer", itemOffered: { "@type": "Service", name: "Garage Cleanout", description: "Complete garage sort, organize, and haul-away service." } },
+            { "@type": "Offer", itemOffered: { "@type": "Service", name: "Construction Debris Removal", description: "Construction and renovation debris hauling and disposal." } },
+            { "@type": "Offer", itemOffered: { "@type": "Service", name: "Furniture Removal", description: "Old furniture pickup, donation coordination, and disposal." } },
+            { "@type": "Offer", itemOffered: { "@type": "Service", name: "Appliance Removal", description: "Refrigerators, washers, dryers, and all appliance hauling." } },
+          ],
+        },
+      });
+    }
+
     if (reqPath.startsWith("/partners/comfort-solutions-tech")) {
       jsonLdBlocks.push({
         "@context": "https://schema.org",
