@@ -2,6 +2,145 @@ import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
 
+// Server-side content for crawlers (PerplexityBot, ChatGPT-User, Googlebot, etc.)
+// Since the SPA renders client-side only, crawlers see an empty <div id="root"></div>.
+// This injects real text content inside a <noscript> block so crawlers get readable page content.
+function getCrawlerContent(reqPath: string): string {
+  const pages: Record<string, string> = {
+    "/": `
+      <h1>UpTend — Home Intelligence Platform | Orlando Metro</h1>
+      <h2>One Price. One Pro. Done.</h2>
+      <p>UpTend matches Orlando homeowners with one vetted, licensed, background-checked pro at one locked price. No bidding, no haggling, no surprises.</p>
+      <h3>How It Works</h3>
+      <ol>
+        <li>Describe your problem to George (our AI home expert) via chat, call, or text</li>
+        <li>George scopes the job and gives you a transparent price</li>
+        <li>A vetted, licensed pro is dispatched — often same-day</li>
+        <li>Pay only after the work is done</li>
+      </ol>
+      <h3>13 Home Service Categories</h3>
+      <ul>
+        <li>HVAC — AC repair, heating, installation, maintenance, duct cleaning, 24/7 emergency</li>
+        <li>Plumbing — repairs, installations, water heaters, drain cleaning</li>
+        <li>Electrical — panel upgrades, wiring, outlets, lighting</li>
+        <li>Junk Removal — same-day pickup, estate cleanouts</li>
+        <li>Pressure Washing — driveways, patios, house washing</li>
+        <li>Gutter Cleaning — cleaning, guards, repairs</li>
+        <li>Home Cleaning — deep clean, move-in/out, recurring</li>
+        <li>Handyman — repairs, installations, honey-do lists</li>
+        <li>Landscaping — lawn care, tree trimming, design</li>
+        <li>Moving Labor — loading, unloading, furniture moving</li>
+        <li>Painting — interior, exterior, cabinet refinishing</li>
+        <li>Pool Cleaning — weekly service, equipment repair</li>
+        <li>Carpet Cleaning — steam cleaning, stain removal</li>
+      </ul>
+      <h3>Service Areas</h3>
+      <p>Lake Nona, Windermere, Avalon Park, Dr. Phillips, Winter Park, College Park, Baldwin Park, Celebration, Hunter's Creek, Horizon West, MetroWest, Laureate Park, Thornton Park</p>
+      <h3>Contact</h3>
+      <p>Phone: (855) 901-2072 (24/7, English and Spanish)</p>
+      <p>Website: uptendapp.com</p>
+    `,
+    "/services/hvac": `
+      <h1>HVAC Repair and AC Installation — Orlando Metro | UpTend</h1>
+      <h2>24/7 AC Repair. Licensed Technicians. Transparent Pricing.</h2>
+      <p>UpTend connects you with vetted, licensed HVAC professionals in Orlando. Same-day service available. One Price. One Pro. Done.</p>
+      <h3>HVAC Services We Cover</h3>
+      <ul>
+        <li>AC Repair — compressors, capacitors, refrigerant, thermostats, motors</li>
+        <li>Heating Repair — heat pumps, furnaces, electric heaters</li>
+        <li>HVAC Installation — full system replacement, new construction</li>
+        <li>Duct Cleaning — full ductwork cleaning and sealing</li>
+        <li>Maintenance Plans — annual tune-ups, filter changes, inspections</li>
+        <li>Emergency Service — 24/7 emergency AC and heating repair, no upcharge</li>
+      </ul>
+      <h3>How Much Does AC Repair Cost in Orlando?</h3>
+      <ul>
+        <li>Diagnostic visit: $89</li>
+        <li>Common AC repairs (capacitor, contactor, thermostat): $89–$350</li>
+        <li>Refrigerant recharge: $150–$400</li>
+        <li>Compressor replacement: $1,500–$3,500</li>
+        <li>Full system replacement: $4,500–$12,000</li>
+        <li>Emergency and after-hours: same price, no upcharge</li>
+      </ul>
+      <p>All pricing is transparent and provided before work begins.</p>
+      <h3>Why Choose UpTend for HVAC?</h3>
+      <ul>
+        <li>Every technician is licensed, insured, and background-checked</li>
+        <li>Transparent pricing — know the cost before work starts</li>
+        <li>Price Protection Guarantee — the price you're quoted is the price you pay</li>
+        <li>Same-day service available for most repairs</li>
+        <li>24/7 emergency service with no after-hours upcharge</li>
+        <li>AI-powered diagnostics — send a photo for instant assessment</li>
+      </ul>
+      <h3>Service Areas</h3>
+      <p>Lake Nona, Windermere, Avalon Park, Dr. Phillips, Winter Park, College Park, Baldwin Park, Celebration, Hunter's Creek, Horizon West, MetroWest, Laureate Park, Orlando</p>
+      <h3>Contact</h3>
+      <p>Call (855) 901-2072 for HVAC service. Available 24/7. English and Spanish.</p>
+    `,
+    "/how-it-works": `
+      <h1>How UpTend Works — Home Services Made Simple</h1>
+      <h2>One Price. One Pro. Done.</h2>
+      <h3>Step 1: Tell George What You Need</h3>
+      <p>Chat with George (our AI home expert) online, call (855) 901-2072, or text. Describe the problem in plain English. George understands home issues and asks the right follow-up questions. You can even send photos for instant assessment.</p>
+      <h3>Step 2: Get Your Price</h3>
+      <p>George scopes the job and gives you one transparent price. No bidding wars. No haggling with multiple contractors. No surprise charges. The price you see is the price you pay — guaranteed.</p>
+      <h3>Step 3: Your Pro Shows Up</h3>
+      <p>We dispatch one vetted, licensed, background-checked professional. Often same-day. You can track them in real-time. They arrive, do the work, and you only pay after it's done.</p>
+      <h3>The UpTend Difference</h3>
+      <ul>
+        <li>Unlike Angi or Thumbtack, you don't get 5 random quotes from strangers</li>
+        <li>Unlike HomeAdvisor, your info isn't sold to multiple contractors</li>
+        <li>One vetted pro. One locked price. Work guaranteed.</li>
+      </ul>
+    `,
+    "/home-report": `
+      <h1>Free Instant Home Intelligence Report | UpTend</h1>
+      <h2>Type Your Address. Get Your AI Maintenance Report.</h2>
+      <p>UpTend's Instant Home Intelligence uses public records and AI to generate a personalized maintenance report for your home. Completely free. No signup required.</p>
+      <h3>What You Get</h3>
+      <ul>
+        <li>Estimated age of major systems (roof, HVAC, water heater, appliances)</li>
+        <li>Predicted maintenance timeline — what's due now vs. next year</li>
+        <li>Estimated repair and replacement costs</li>
+        <li>Priority recommendations based on your home's age and location</li>
+        <li>Local seasonal maintenance tips for Central Florida</li>
+      </ul>
+      <p>Powered by RentCast property data and GPT-4o analysis. Available for homes in the Orlando Metro area.</p>
+    `,
+  };
+
+  // Neighborhood pages
+  const neighborhoodMatch = reqPath.match(/^\/neighborhoods\/([a-z-]+)$/);
+  if (neighborhoodMatch) {
+    const slug = neighborhoodMatch[1];
+    const name = slug.split("-").map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+    return `
+      <h1>Home Services in ${name}, Orlando | UpTend</h1>
+      <h2>Vetted Local Pros. Transparent Pricing. ${name}.</h2>
+      <p>UpTend serves ${name} with 13 categories of home services: HVAC, plumbing, electrical, junk removal, pressure washing, gutter cleaning, home cleaning, handyman, landscaping, moving labor, painting, pool cleaning, and carpet cleaning.</p>
+      <h3>HVAC Service in ${name}</h3>
+      <p>AC repair, heating, installation, and maintenance from licensed technicians. Same-day service available. Emergency 24/7 service with no after-hours upcharge. Call (855) 901-2072.</p>
+      <h3>How It Works in ${name}</h3>
+      <p>1. Tell George what you need. 2. Get one transparent price. 3. Your vetted pro arrives — often same-day. One Price. One Pro. Done.</p>
+      <p>Phone: (855) 901-2072 | uptendapp.com</p>
+    `;
+  }
+
+  // Service pages
+  const serviceMatch = reqPath.match(/^\/services\/([a-z-]+)$/);
+  if (serviceMatch && serviceMatch[1] !== "hvac") {
+    const slug = serviceMatch[1];
+    const name = slug.split("-").map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+    return `
+      <h1>${name} Services in Orlando Metro | UpTend</h1>
+      <h2>One Price. One Pro. Done.</h2>
+      <p>Professional ${name.toLowerCase()} services from vetted, licensed pros in the Orlando Metro area. Transparent pricing. No surprises. Call (855) 901-2072 or chat with George at uptendapp.com.</p>
+    `;
+  }
+
+  return pages[reqPath] || "";
+}
+
 export function serveStatic(app: Express) {
   const distPath = path.resolve(__dirname, "public");
   if (!fs.existsSync(distPath)) {
@@ -188,6 +327,18 @@ export function serveStatic(app: Express) {
         `<script type="application/ld+json">${JSON.stringify(block)}</script>`
       ).join("\n");
       html = html.replace("</head>", `${scripts}\n</head>`);
+    }
+
+    // Inject crawler-readable content INSIDE <div id="root">
+    // React.createRoot().render() replaces the inner content when JS loads,
+    // but crawlers that don't execute JS see real page content instead of empty div.
+    // This is the same pattern as SSR hydration — content is visible until React takes over.
+    const crawlerContent = getCrawlerContent(reqPath);
+    if (crawlerContent) {
+      html = html.replace(
+        '<div id="root"></div>',
+        `<div id="root"><div style="max-width:800px;margin:0 auto;padding:20px;font-family:system-ui,sans-serif;">${crawlerContent}</div></div>`
+      );
     }
 
     res.setHeader("Content-Type", "text/html");
